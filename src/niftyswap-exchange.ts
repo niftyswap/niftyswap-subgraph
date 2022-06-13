@@ -183,6 +183,12 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     } else {
       token.spotPrice = BigDecimal.zero();
     }
+    token.currencyReserve = token.currencyReserve.plus(
+      event.params.tokensBoughtAmounts[i].times(token.tokenAmount.div(token.currencyReserve))
+    );
+    token.tokenAmount = token.tokenAmount.minus(
+      event.params.tokensBoughtAmounts[i]
+    );
     token.save();
   }
   niftyswapExchange.txCount = niftyswapExchange.txCount.plus(BigInt.fromI32(1));
