@@ -54,6 +54,7 @@ export function handleNewExchange(event: NewExchange): void {
   niftyswapExchange.liquidity = BigInt.fromI32(0)
   niftyswapExchange.txCount = BigInt.fromI32(0)
   niftyswapExchange.lpFee = event.params.lpFee
+  niftyswapExchange.lpFee = BigInt.fromI32(5)
   Exchange.create(event.params.exchange)
   niftyswapExchange.currency = currency.id
   niftyswapExchange.save()
