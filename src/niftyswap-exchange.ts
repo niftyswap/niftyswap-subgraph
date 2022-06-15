@@ -51,6 +51,11 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
       let numerator = event.params.tokenAmounts[i].times(token.currencyReserve) as BigInt
       let denominator = token.tokenAmount as BigInt
       let reserve = divRound(numerator, denominator)
+      if (denominator.equals(BigInt.fromI32(0))) {
+        log.error("Denominator is zero: {}", [token.id]);
+        return;
+      }
+      let reserve = divRound(numerator, denominator);
       token.currencyReserve = token.currencyReserve.plus(reserve);
     }
     token.tokenAmount = token.tokenAmount.plus(event.params.tokenAmounts[i]);
@@ -172,6 +177,11 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     let denominator = (tokenAmount
       .minus(amountBought))
       .times(BigInt.fromI32(1000).minus(lpFee));
+
+    if (denominator.equals(BigInt.fromI32(0))) {
+      log.error("Denominator is zero: {}", [token.id]);
+      return;
+    }
 
     let buyPrice = divRound(numerator, denominator);
 
