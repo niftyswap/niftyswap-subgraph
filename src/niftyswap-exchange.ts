@@ -64,6 +64,7 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
     }
 
     token.save();
+    niftyswapExchange.liquidity = niftyswapExchange.liquidity.plus(token.currencyReserve.times(BigInt.fromI32(2)));
   }
   niftyswapExchange.txCount = niftyswapExchange.txCount.plus(BigInt.fromI32(1));
   niftyswapExchange.save();
@@ -114,6 +115,7 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
       token.spotPrice = BigDecimal.zero();
     }
     token.save();
+    niftyswapExchange.liquidity = niftyswapExchange.liquidity.minus(token.currencyReserve.times(BigInt.fromI32(2)));
   }
   niftyswapExchange.txCount = niftyswapExchange.txCount.plus(BigInt.fromI32(1));
   niftyswapExchange.save();

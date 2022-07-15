@@ -69,7 +69,9 @@ type NiftyswapExchange @entity {
   tokenMeta: TokenMeta!
   # currency
   currency: Currency!
-  # in range liquidity
+  # Total Value Locked
+  totalValueLocked: BigDecimal!
+  # Liquidity
   liquidity: BigInt!
   # all time number of transactions
   txCount: BigInt!

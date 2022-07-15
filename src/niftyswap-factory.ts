@@ -1,11 +1,11 @@
 import { FACTORY_ADDRESS } from './utils/constants';
-import { BigInt, log } from "@graphprotocol/graph-ts"
+import { BigInt, log ,BigDecimal} from "@graphprotocol/graph-ts"
 import {
   NiftyswapFactory,
   NewExchange,
   OwnershipTransferred
 } from "../generated/NiftyswapFactory/NiftyswapFactory"
-import { Factory, NiftyswapExchange,Currency, Token, TokenMeta } from "../generated/schema"
+import { Factory, NiftyswapExchange,Currency, Token, Collection } from "../generated/schema"
 import { NiftyswapExchange as Exchange} from '../generated/templates'
 import { ADDRESS_ZERO } from './utils/constants';
 import { fetchCurrencyDecimals } from './utils/currency';
@@ -54,6 +54,7 @@ export function handleNewExchange(event: NewExchange): void {
   niftyswapExchange.liquidity = BigInt.fromI32(0)
   niftyswapExchange.txCount = BigInt.fromI32(0)
   niftyswapExchange.lpFee = event.params.lpFee
+  niftyswapExchange.totalValueLocked = BigDecimal.fromString('0')
   Exchange.create(event.params.exchange)
   niftyswapExchange.currency = currency.id
   niftyswapExchange.save()
