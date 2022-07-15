@@ -167,7 +167,6 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     let currencyReserve = token.currencyReserve as BigInt;
     let tokenAmount = token.tokenAmount as BigInt;
     let lpFee = niftyswapExchange.lpFee;
-    let lpFee = exchange.lpFee;
 
     let numerator = currencyReserve
       .times(amountBought)
@@ -323,6 +322,12 @@ export function safeDiv(amount0: BigDecimal, amount1: BigDecimal): BigDecimal {
   } else {
     return amount0.div(amount1)
   }
+function divRound(a: BigInt, b: BigInt): BigInt {
+  return a.mod(b).equals(BigInt.fromI32(0))
+    ? a.div(b)
+    : a.div(b).plus(BigInt.fromI32(1));
+}
+
 function divRound(a: BigInt, b: BigInt): BigInt {
   return a.mod(b).equals(BigInt.fromI32(0))
     ? a.div(b)
