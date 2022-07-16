@@ -1,13 +1,17 @@
 {
-  "name": "niftyswap-rinkeby",
+  "name": "niftyswap",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ aditya520/niftyswap-rinkeby",
-    "create-local": "graph create --node http://localhost:8020/ aditya520/niftyswap-rinkeby",
-    "remove-local": "graph remove --node http://localhost:8020/ aditya520/niftyswap-rinkeby",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 aditya520/niftyswap-rinkeby"
+    "deploy-matic": "graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap",
+    "create-local-matic": "graph create --node http://localhost:8020/ niftyswap/niftyswap",
+    "remove-local-matic": "graph remove --node http://localhost:8020/ niftyswap/niftyswap",
+    "deploy-local-matic": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap",
+    "deploy-rinkeby": "graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-rinkeby",
+    "create-local-rinkeby": "graph create --node http://localhost:8020/ niftyswap/niftyswap-rinkeby",
+    "remove-local-rinkeby": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-rinkeby",
+    "deploy-local-rinkeby": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-rinkeby"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.30.2",

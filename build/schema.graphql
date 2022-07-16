@@ -19,13 +19,11 @@ type Currency @entity {
   # currency decimals
   decimals: BigInt!
   # number of Exchanges containing this currency
-  poolCount: BigInt!
-  # liquidity across all Exchanges in token units
-  totalValueLocked: BigDecimal
+  exchangeCount: BigInt!
 }
 
-type TokenMeta @entity {
-   # TokenMeta address
+type Collection @entity {
+  # Collection address
   id: ID!
   # token name
   name: String
@@ -33,29 +31,27 @@ type TokenMeta @entity {
   decimals: BigInt
   # tokens
   tokenIds: [Token!]!
-  # token total supply
-  totalSupply: BigInt
-  # volume in token units
-  volume: BigDecimal
-  # number of Exchanges containing this currency
-  poolCount: BigInt
-  # liquidity across all Exchanges in token units
-  totalValueLocked: BigDecimal
+  # total number of tokens in the collection
+  nTokenIds: BigInt!
+  # number of Exchanges containing this Collection
+  nExchanges: BigInt!
 }
 
+# Specific to an exchange
 type Token @entity{
   # tokenId + "-" + tokenAddress + "-" + ExchangeAddress
   id: ID!
-  # # Buy Price
-  # buyPrice: BigDecimal
-  # # Sell Price
-  # sellPrice: BigDecimal
   # Spot Price
-  spotPrice: BigDecimal
+  spotPrice: BigDecimal!
   # Token Amount
   tokenAmount: BigInt!
   # Currency Reserve
-  currencyReserve: BigInt!
+  currencyReserve: BigDecimal!
+  # Royalty Amount
+  royaltyAmount: BigDecimal!
+  # all time calculated fees (Amount of swaps * Liquidity Fee)
+  collectedFeesToken: BigDecimal!
+  # TODO: APY
 }
 
 type NiftyswapExchange @entity {
@@ -66,13 +62,13 @@ type NiftyswapExchange @entity {
   # block pool was created at
   createdAtBlockNumber: BigInt!
   # token
-  tokenMeta: TokenMeta!
+  collection: Collection!
   # currency
   currency: Currency!
-  # in range liquidity
-  liquidity: BigInt!
   # all time number of transactions
   txCount: BigInt!
   # lp Fee
   lpFee: BigInt!
+  # Total Value Locked
+  totalValueLocked: BigDecimal!
 }
