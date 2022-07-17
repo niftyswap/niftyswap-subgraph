@@ -148,11 +148,15 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
       token.spotPrice = ZERO_BD
     }
 
+    token.save();
+
     niftyswapExchange.totalValueLocked = niftyswapExchange.totalValueLocked.minus(
       token.currencyReserve.times(BigInt.fromI32(2)).toBigDecimal()
     );
 
-    token.save();
+    niftyswapExchange.volume = niftyswapExchange.volume.minus(
+      event.params.tokenAmounts[i]
+    );
   }
 
   niftyswapExchange.txCount = niftyswapExchange.txCount.plus(ONE_BI);
@@ -215,6 +219,7 @@ export function handleTokenPurchase(event: TokensPurchase): void {
 
     let buyPrice = divRound(numerator, denominator);
 
+    
     token.currencyReserve = token.currencyReserve.plus(buyPrice);
 
     // Spot price calculation
@@ -277,8 +282,6 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
       return;
     }
 
-    token.tokenAmount = token.tokenAmount.plus(event.params.tokensSoldAmounts[i]);
-
     // Get Sell Price Calculation
     let fee_multiplier = BigInt.fromI32(1000).minus(niftyswapExchange.lpFee);
     let numerator = token.currencyReserve
@@ -289,6 +292,7 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
       .plus((event.params.tokensSoldAmounts[i])
       .times(fee_multiplier));
     let sellPrice = numerator.div(denominator);
+    token.tokenAmount = token.tokenAmount.plus(event.params.tokensSoldAmounts[i]);
     token.currencyReserve = token.currencyReserve.minus(sellPrice);
     // Spot price calculation
     if (
@@ -305,7 +309,7 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
 
     token.save();
   }
-  
+
    // Assumption: Swaps doesn't change TVL
   niftyswapExchange.txCount = niftyswapExchange.txCount.plus(BigInt.fromI32(1));
   niftyswapExchange.save();
