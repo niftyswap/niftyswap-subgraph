@@ -58,6 +58,7 @@ export function handleNewExchange(event: NewExchange): void {
   niftyswapExchange.txCount = ZERO_BI
   niftyswapExchange.lpFee = event.params.lpFee
   niftyswapExchange.currency = currency.id
+  niftyswapExchange.volume = ZERO_BI
 
   niftyswapExchange.totalValueLocked = ZERO_BD
   niftyswapExchange.save()
@@ -90,3 +91,4 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
 
 // TODO: Yaml Parser
 // erc 1155 token metadata completion
+// Royalty Amount calculation

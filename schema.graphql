@@ -46,9 +46,9 @@ type Token @entity{
   # Token Amount
   tokenAmount: BigInt!
   # Currency Reserve
-  currencyReserve: BigDecimal!
+  currencyReserve: BigInt!
   # Royalty Amount
-  royaltyAmount: BigDecimal!
+  royaltyAmount: BigDecimal
   # all time calculated fees (Amount of swaps * Liquidity Fee)
   collectedFeesToken: BigDecimal!
   # TODO: APY
@@ -71,4 +71,6 @@ type NiftyswapExchange @entity {
   lpFee: BigInt!
   # Total Value Locked
   totalValueLocked: BigDecimal!
+  # Number of Tokens in the Pool
+  volume: BigInt!
 }
