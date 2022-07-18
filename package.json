@@ -4,17 +4,20 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy-matic": "graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap",
+    "deploy-matic": "yarn generate-matic && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap",
     "create-local-matic": "graph create --node http://localhost:8020/ niftyswap/niftyswap",
     "remove-local-matic": "graph remove --node http://localhost:8020/ niftyswap/niftyswap",
     "deploy-local-matic": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap",
-    "deploy-rinkeby": "graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-rinkeby",
+    "generate-matic": "rm subgraph.yaml && mustache ./networks/polygon.json subgraph.template.yaml subgraph.yaml",
+    "deploy-rinkeby": "yarn generate-rinkeby && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-rinkeby",
     "create-local-rinkeby": "graph create --node http://localhost:8020/ niftyswap/niftyswap-rinkeby",
     "remove-local-rinkeby": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-rinkeby",
-    "deploy-local-rinkeby": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-rinkeby"
+    "deploy-local-rinkeby": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-rinkeby",
+    "generate-rinkeby": "rm subgraph.yaml && mustache ./networks/rinkeby.json subgraph.template.yaml subgraph.yaml"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.30.2",
-    "@graphprotocol/graph-ts": "0.27.0"
+    "@graphprotocol/graph-ts": "0.27.0",
+    "mustache": "^4.2.0"
   }
 }
