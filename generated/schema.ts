@@ -330,6 +330,24 @@ export class Token extends Entity {
   set collectedFeesToken(value: BigDecimal) {
     this.set("collectedFeesToken", Value.fromBigDecimal(value));
   }
+
+  get totalValueLocked(): BigInt {
+    let value = this.get("totalValueLocked");
+    return value!.toBigInt();
+  }
+
+  set totalValueLocked(value: BigInt) {
+    this.set("totalValueLocked", Value.fromBigInt(value));
+  }
+
+  get volume(): BigInt {
+    let value = this.get("volume");
+    return value!.toBigInt();
+  }
+
+  set volume(value: BigInt) {
+    this.set("volume", Value.fromBigInt(value));
+  }
 }
 
 export class NiftyswapExchange extends Entity {
@@ -419,13 +437,13 @@ export class NiftyswapExchange extends Entity {
     this.set("lpFee", Value.fromBigInt(value));
   }
 
-  get totalValueLocked(): BigDecimal {
+  get totalValueLocked(): BigInt {
     let value = this.get("totalValueLocked");
-    return value!.toBigDecimal();
+    return value!.toBigInt();
   }
 
-  set totalValueLocked(value: BigDecimal) {
-    this.set("totalValueLocked", Value.fromBigDecimal(value));
+  set totalValueLocked(value: BigInt) {
+    this.set("totalValueLocked", Value.fromBigInt(value));
   }
 
   get volume(): BigInt {
@@ -435,5 +453,14 @@ export class NiftyswapExchange extends Entity {
 
   set volume(value: BigInt) {
     this.set("volume", Value.fromBigInt(value));
+  }
+
+  get totalCurrencyReserve(): BigInt {
+    let value = this.get("totalCurrencyReserve");
+    return value!.toBigInt();
+  }
+
+  set totalCurrencyReserve(value: BigInt) {
+    this.set("totalCurrencyReserve", Value.fromBigInt(value));
   }
 }
