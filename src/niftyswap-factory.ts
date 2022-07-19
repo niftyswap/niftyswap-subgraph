@@ -104,4 +104,4 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
 // Royalty Amount calculation
 // 24hVolume calculation
 // 24h Number of swaps calculation
-// Spot price without decimal adjustments (Done)
+// Spot price without decimal adjustments

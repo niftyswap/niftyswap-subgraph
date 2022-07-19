@@ -77,6 +77,7 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
     } else {
       token.spotPrice = ZERO_BD;
     }
+    token.spotPrice = token.spotPrice.truncate(0);
     token.collectedFeesToken = ZERO_BD;
     token.save();
   }
@@ -138,6 +139,7 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
     } else {
       token.spotPrice = ZERO_BD;
     }
+    token.spotPrice = token.spotPrice.truncate(0);
 
     token.save();
     niftyswapExchange.volume = niftyswapExchange.volume.minus(
@@ -221,6 +223,7 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     } else {
       token.spotPrice = ZERO_BD;
     }
+    token.spotPrice = token.spotPrice.truncate(0);
 
     token.save();
   }
@@ -293,6 +296,7 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
     } else {
       token.spotPrice = ZERO_BD;
     }
+    token.spotPrice = token.spotPrice.truncate(0);
 
     token.save();
   }

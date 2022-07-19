@@ -53,6 +53,8 @@ type Token @entity{
   collectedFeesToken: BigDecimal!
   # Total Currency Reserve (CurrencyReserve * 2)
   totalValueLocked: BigInt!
+  # Volume
+  volume: BigInt!
   # TODO: APY
 }
 
