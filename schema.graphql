@@ -55,7 +55,10 @@ type Token @entity{
   totalValueLocked: BigInt!
   # Volume
   volume: BigInt!
+  # number of swaps
+  nSwaps: BigInt!
   # TODO: APY
+  apy: BigDecimal!
 }
 
 type NiftyswapExchange @entity {
@@ -79,4 +82,6 @@ type NiftyswapExchange @entity {
   volume: BigInt!
   # Total Currency Reserve
   totalCurrencyReserve: BigInt!
+  # number of swaps
+  nSwaps: BigInt!
 }

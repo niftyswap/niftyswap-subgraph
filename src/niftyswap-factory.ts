@@ -14,7 +14,6 @@ import {
   Factory,
   NiftyswapExchange,
   Currency,
-  Token,
   Collection,
 } from "../generated/schema";
 import { NiftyswapExchange as Exchange } from "../generated/templates";
@@ -80,6 +79,7 @@ export function handleNewExchange(event: NewExchange): void {
   niftyswapExchange.totalValueLocked = ZERO_BI;
   niftyswapExchange.totalCurrencyReserve = ZERO_BI;
   niftyswapExchange.volume = ZERO_BI;
+  niftyswapExchange.nSwaps = ZERO_BI;
   niftyswapExchange.save();
   currency.save();
 
@@ -101,7 +101,6 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
 
 // TODO: Yaml Parser (Done)
 // erc 1155 token metadata completion
-// Royalty Amount calculation
-// 24hVolume calculation
-// 24h Number of swaps calculation
-// Spot price without decimal adjustments
+// 24hVolume calculation (Can be done from the app)
+// 24h Number of swaps calculation (Can be done from the app)
+// Spot price without decimal adjustments (Done)

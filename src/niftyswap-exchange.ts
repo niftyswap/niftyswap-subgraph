@@ -54,8 +54,12 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
       token = new Token(tokenConId);
       token.tokenAmount = event.params.tokenAmounts[i];
       token.currencyReserve = event.params.currencyAmounts[i];
-      niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(event.params.currencyAmounts[i]);
+      niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
+        event.params.currencyAmounts[i]
+      );
       token.volume = ZERO_BI;
+      token.nSwaps = ZERO_BI;
+      token.apy = ZERO_BD;
     } else {
       log.debug("Liquidity already present: {}", [token.id]);
       let currencyReserve = token.currencyReserve;
@@ -65,15 +69,18 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
       let currencyAmount = divRound(numerator, currentTokenReserve);
       token.currencyReserve = token.currencyReserve.plus(currencyAmount);
       token.tokenAmount = token.tokenAmount.plus(tokensToAdd);
-      niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(currencyAmount);
+      niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
+        currencyAmount
+      );
     }
 
     token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
-    
+
     // Spot price calculation
     if (token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI) {
-      token.spotPrice = token.currencyReserve
-        .divDecimal(token.tokenAmount.toBigDecimal());
+      token.spotPrice = token.currencyReserve.divDecimal(
+        token.tokenAmount.toBigDecimal()
+      );
     } else {
       token.spotPrice = ZERO_BD;
     }
@@ -83,7 +90,9 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
   }
 
   collection.save();
-  niftyswapExchange.totalValueLocked = niftyswapExchange.totalCurrencyReserve.times(BigInt.fromI32(2));
+  niftyswapExchange.totalValueLocked = niftyswapExchange.totalCurrencyReserve.times(
+    BigInt.fromI32(2)
+  );
   niftyswapExchange.txCount = niftyswapExchange.txCount.plus(ONE_BI);
   niftyswapExchange.save();
 }
@@ -129,7 +138,9 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
       event.params.details[i].currencyAmount
     );
     token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
-    niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.minus(event.params.details[i].currencyAmount);
+    niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.minus(
+      event.params.details[i].currencyAmount
+    );
 
     // Spot price calculation
     if (token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI) {
@@ -146,8 +157,10 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
       event.params.tokenAmounts[i]
     );
   }
-  
-  niftyswapExchange.totalValueLocked = niftyswapExchange.totalCurrencyReserve.times(BigInt.fromI32(2));
+
+  niftyswapExchange.totalValueLocked = niftyswapExchange.totalCurrencyReserve.times(
+    BigInt.fromI32(2)
+  );
   niftyswapExchange.txCount = niftyswapExchange.txCount.plus(ONE_BI);
   niftyswapExchange.save();
 }
@@ -209,15 +222,25 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     let buyPrice = divRound(numerator, denominator);
 
     token.currencyReserve = token.currencyReserve.plus(buyPrice);
-    token.volume = token.volume.plus(buyPrice);
-    token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
-    niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(buyPrice);
+    let newVolume = token.volume.plus(buyPrice);
+    token.volume = newVolume;
+    let newTVL = token.currencyReserve.times(BigInt.fromI32(2));
+    token.totalValueLocked = newTVL;
+
+    // APY calculation
+    token.apy = ((((newVolume.times(niftyswapExchange.lpFee.div(BigInt.fromI32(1000000)))).div(newTVL)).times(BigInt.fromI32(100000))).divDecimal(BigDecimal.fromString("10000"))).times(BigDecimal.fromString("365"));    
+
+    token.nSwaps = token.nSwaps.plus(ONE_BI);
+    niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
+      buyPrice
+    );
     niftyswapExchange.volume = niftyswapExchange.volume.plus(buyPrice);
+    niftyswapExchange.nSwaps = niftyswapExchange.nSwaps.plus(ONE_BI);
 
     // Spot price calculation
     if (token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI) {
       let currencyReserve = token.currencyReserve.toBigDecimal();
-      
+
       let tokenAmount = token.tokenAmount.toBigDecimal();
       token.spotPrice = currencyReserve.div(tokenAmount);
     } else {
@@ -228,7 +251,9 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     token.save();
   }
 
-  niftyswapExchange.totalValueLocked = niftyswapExchange.totalCurrencyReserve.times(BigInt.fromI32(2));
+  niftyswapExchange.totalValueLocked = niftyswapExchange.totalCurrencyReserve.times(
+    BigInt.fromI32(2)
+  );
   niftyswapExchange.txCount = niftyswapExchange.txCount.plus(BigInt.fromI32(1));
   niftyswapExchange.save();
 }
@@ -284,10 +309,20 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
       event.params.tokensSoldAmounts[i]
     );
     token.currencyReserve = token.currencyReserve.minus(sellPrice);
-    token.volume = token.volume.plus(sellPrice);
-    token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
-    niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.minus(sellPrice);
+    let newVolume = token.volume.minus(sellPrice);
+    token.volume = newVolume;
+    let newTVL = token.currencyReserve.times(BigInt.fromI32(2));
+    token.totalValueLocked = newTVL
+
+    // APY calculation
+    token.apy = ((((newVolume.times(niftyswapExchange.lpFee.div(BigInt.fromI32(1000000)))).div(newTVL)).times(BigInt.fromI32(100000))).divDecimal(BigDecimal.fromString("10000"))).times(BigDecimal.fromString("365"));    
+
+    token.nSwaps = token.nSwaps.plus(ONE_BI);
+    niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.minus(
+      sellPrice
+    );
     niftyswapExchange.volume = niftyswapExchange.volume.plus(sellPrice);
+    niftyswapExchange.nSwaps = niftyswapExchange.nSwaps.plus(ONE_BI);
     // Spot price calculation
     if (token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI) {
       let currencyReserve = token.currencyReserve.toBigDecimal();
@@ -301,7 +336,9 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
     token.save();
   }
 
-  niftyswapExchange.totalValueLocked = niftyswapExchange.totalCurrencyReserve.times(BigInt.fromI32(2));
+  niftyswapExchange.totalValueLocked = niftyswapExchange.totalCurrencyReserve.times(
+    BigInt.fromI32(2)
+  );
   niftyswapExchange.txCount = niftyswapExchange.txCount.plus(BigInt.fromI32(1));
   niftyswapExchange.save();
 }
@@ -339,5 +376,4 @@ export function safeDiv(amount0: BigDecimal, amount1: BigDecimal): BigDecimal {
 function divRound(a: BigInt, b: BigInt): BigInt {
   return a.mod(b).equals(ZERO_BI) ? a.div(b) : a.div(b).plus(ONE_BI);
 }
-
 
