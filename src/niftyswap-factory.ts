@@ -2,10 +2,9 @@ import {
   FACTORY_ADDRESS,
   ZERO_BI,
   ONE_BI,
-  ZERO_BD,
   ADDRESS_ZERO,
 } from "./utils/constants";
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import {
   NewExchange,
   OwnershipTransferred,
@@ -19,8 +18,8 @@ import {
 import { NiftyswapExchange as Exchange } from "../generated/templates";
 import {
   fetchCurrencyDecimals,
-  fetchTokenName,
-  fetchTokenSymbol,
+  fetchCurrencyName,
+  fetchCurrencySymbol,
 } from "./utils/currency";
 
 export function handleNewExchange(event: NewExchange): void {
@@ -46,8 +45,8 @@ export function handleNewExchange(event: NewExchange): void {
       // Default to 18 decimals if we can't fetch the decimals
       decimals = BigInt.fromI32(18);
     }
-    currency.name = fetchTokenName(event.params.currency);
-    currency.symbol = fetchTokenSymbol(event.params.currency);
+    currency.name = fetchCurrencyName(event.params.currency);
+    currency.symbol = fetchCurrencySymbol(event.params.currency);
     currency.decimals = decimals;
   }
   currency.exchangeCount = currency.exchangeCount.plus(ONE_BI);
@@ -98,9 +97,3 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   factory.owner = event.params.newOwner.toHex();
   factory.save();
 }
-
-// TODO: Yaml Parser (Done)
-// erc 1155 token metadata completion
-// 24hVolume calculation (Can be done from the app)
-// 24h Number of swaps calculation (Can be done from the app)
-// Spot price without decimal adjustments (Done)

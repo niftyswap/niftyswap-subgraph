@@ -17,7 +17,7 @@ export function fetchCurrencyDecimals(tokenAddress: Address): BigInt {
   return BigInt.fromI32(decimalValue as i32);
 }
 
-export function fetchTokenSymbol(tokenAddress: Address): string {
+export function fetchCurrencySymbol(tokenAddress: Address): string {
   let contract = ERC20.bind(tokenAddress);
   let contractSymbolBytes = ERC20SymbolBytes.bind(tokenAddress);
 
@@ -39,7 +39,7 @@ export function fetchTokenSymbol(tokenAddress: Address): string {
   return symbolValue;
 }
 
-export function fetchTokenName(tokenAddress: Address): string {
+export function fetchCurrencyName(tokenAddress: Address): string {
   let contract = ERC20.bind(tokenAddress);
   let contractNameBytes = ERC20NameBytes.bind(tokenAddress);
 

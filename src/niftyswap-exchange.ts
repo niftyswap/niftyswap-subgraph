@@ -59,7 +59,6 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
       );
       token.volume = ZERO_BI;
       token.nSwaps = ZERO_BI;
-      token.apy = ZERO_BD;
     } else {
       log.debug("Liquidity already present: {}", [token.id]);
       let currencyReserve = token.currencyReserve;
@@ -85,7 +84,6 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
       token.spotPrice = ZERO_BD;
     }
     token.spotPrice = token.spotPrice.truncate(0);
-    token.collectedFeesToken = ZERO_BD;
     token.save();
   }
 
@@ -227,9 +225,6 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     let newTVL = token.currencyReserve.times(BigInt.fromI32(2));
     token.totalValueLocked = newTVL;
 
-    // APY calculation
-    token.apy = ((((newVolume.times(niftyswapExchange.lpFee.div(BigInt.fromI32(1000000)))).div(newTVL)).times(BigInt.fromI32(100000))).divDecimal(BigDecimal.fromString("10000"))).times(BigDecimal.fromString("365"));    
-
     token.nSwaps = token.nSwaps.plus(ONE_BI);
     niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
       buyPrice
@@ -309,13 +304,8 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
       event.params.tokensSoldAmounts[i]
     );
     token.currencyReserve = token.currencyReserve.minus(sellPrice);
-    let newVolume = token.volume.minus(sellPrice);
-    token.volume = newVolume;
-    let newTVL = token.currencyReserve.times(BigInt.fromI32(2));
-    token.totalValueLocked = newTVL
-
-    // APY calculation
-    token.apy = ((((newVolume.times(niftyswapExchange.lpFee.div(BigInt.fromI32(1000000)))).div(newTVL)).times(BigInt.fromI32(100000))).divDecimal(BigDecimal.fromString("10000"))).times(BigDecimal.fromString("365"));    
+    token.volume = token.volume.minus(sellPrice);
+    token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
 
     token.nSwaps = token.nSwaps.plus(ONE_BI);
     niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.minus(
@@ -376,4 +366,3 @@ export function safeDiv(amount0: BigDecimal, amount1: BigDecimal): BigDecimal {
 function divRound(a: BigInt, b: BigInt): BigInt {
   return a.mod(b).equals(ZERO_BI) ? a.div(b) : a.div(b).plus(ONE_BI);
 }
-

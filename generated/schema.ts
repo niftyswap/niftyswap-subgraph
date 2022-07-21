@@ -305,32 +305,6 @@ export class Token extends Entity {
     this.set("currencyReserve", Value.fromBigInt(value));
   }
 
-  get royaltyAmount(): BigDecimal | null {
-    let value = this.get("royaltyAmount");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigDecimal();
-    }
-  }
-
-  set royaltyAmount(value: BigDecimal | null) {
-    if (!value) {
-      this.unset("royaltyAmount");
-    } else {
-      this.set("royaltyAmount", Value.fromBigDecimal(<BigDecimal>value));
-    }
-  }
-
-  get collectedFeesToken(): BigDecimal {
-    let value = this.get("collectedFeesToken");
-    return value!.toBigDecimal();
-  }
-
-  set collectedFeesToken(value: BigDecimal) {
-    this.set("collectedFeesToken", Value.fromBigDecimal(value));
-  }
-
   get totalValueLocked(): BigInt {
     let value = this.get("totalValueLocked");
     return value!.toBigInt();
@@ -356,15 +330,6 @@ export class Token extends Entity {
 
   set nSwaps(value: BigInt) {
     this.set("nSwaps", Value.fromBigInt(value));
-  }
-
-  get apy(): BigDecimal {
-    let value = this.get("apy");
-    return value!.toBigDecimal();
-  }
-
-  set apy(value: BigDecimal) {
-    this.set("apy", Value.fromBigDecimal(value));
   }
 }
 
