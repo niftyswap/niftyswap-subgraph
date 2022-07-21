@@ -57,3 +57,16 @@ This query fetches first 100 exchange data from all niftyswap exchange, sorted b
 
 This query fetches a specific token data
 
+```graphql
+{
+  tokens(first: 1, where: {id: "65539-0x631998e91476da5b870d741192fc5cbc55f5a52e-0x6f5c06d4f90e30f0ea3deb5bf760b2aa97643f55"}) {
+    id
+    tokenAmount
+    currencyReserve
+    spotPrice
+    totalValueLocked
+    volume
+    nSwaps
+  }
+}
+```
