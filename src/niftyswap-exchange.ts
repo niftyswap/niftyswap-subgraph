@@ -59,6 +59,8 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
       );
       token.volume = ZERO_BI;
       token.nSwaps = ZERO_BI;
+      token.nTokensBought = ZERO_BI;
+      token.nTokensSold = ZERO_BI;
     } else {
       log.debug("Liquidity already present: {}", [token.id]);
       let currencyReserve = token.currencyReserve;
@@ -242,6 +244,7 @@ export function handleTokenPurchase(event: TokensPurchase): void {
       token.spotPrice = ZERO_BD;
     }
     token.spotPrice = token.spotPrice.truncate(0);
+    token.nTokensBought = token.nTokensBought.plus(event.params.tokensBoughtAmounts[i]);
 
     token.save();
   }
@@ -322,6 +325,7 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
       token.spotPrice = ZERO_BD;
     }
     token.spotPrice = token.spotPrice.truncate(0);
+    token.nTokensSold = token.nTokensSold.plus(event.params.tokensSoldAmounts[i]);
 
     token.save();
   }

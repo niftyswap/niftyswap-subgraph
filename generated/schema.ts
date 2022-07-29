@@ -331,6 +331,24 @@ export class Token extends Entity {
   set nSwaps(value: BigInt) {
     this.set("nSwaps", Value.fromBigInt(value));
   }
+
+  get nTokensSold(): BigInt {
+    let value = this.get("nTokensSold");
+    return value!.toBigInt();
+  }
+
+  set nTokensSold(value: BigInt) {
+    this.set("nTokensSold", Value.fromBigInt(value));
+  }
+
+  get nTokensBought(): BigInt {
+    let value = this.get("nTokensBought");
+    return value!.toBigInt();
+  }
+
+  set nTokensBought(value: BigInt) {
+    this.set("nTokensBought", Value.fromBigInt(value));
+  }
 }
 
 export class NiftyswapExchange extends Entity {
