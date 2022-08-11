@@ -307,7 +307,7 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
       event.params.tokensSoldAmounts[i]
     );
     token.currencyReserve = token.currencyReserve.minus(sellPrice);
-    token.volume = token.volume.minus(sellPrice);
+    token.volume = token.volume.plus(sellPrice);
     token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
 
     token.nSwaps = token.nSwaps.plus(ONE_BI);
