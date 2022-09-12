@@ -65,14 +65,23 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
       log.debug("Liquidity already present: {}", [token.id]);
       let currencyReserve = token.currencyReserve;
       let currentTokenReserve = token.tokenAmount;
-      let tokensToAdd = event.params.tokenAmounts[i];
-      let numerator = tokensToAdd.times(currencyReserve);
-      let currencyAmount = divRound(numerator, currentTokenReserve);
-      token.currencyReserve = token.currencyReserve.plus(currencyAmount);
-      token.tokenAmount = token.tokenAmount.plus(tokensToAdd);
-      niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
-        currencyAmount
-      );
+
+      // Special case
+      if (currentTokenReserve.equals(ZERO_BI)) {
+        token.currencyReserve = event.params.currencyAmounts[i];
+        niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
+          event.params.currencyAmounts[i]
+        );
+      } else {
+        let tokensToAdd = event.params.tokenAmounts[i];
+        let numerator = tokensToAdd.times(currencyReserve);
+        let currencyAmount = divRound(numerator, currentTokenReserve);
+        token.currencyReserve = token.currencyReserve.plus(currencyAmount);
+        niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
+          currencyAmount
+        );
+      }
+      token.tokenAmount = token.tokenAmount.plus(event.params.tokenAmounts[i]);
     }
 
     token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
@@ -85,7 +94,7 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
     } else {
       token.spotPrice = ZERO_BD;
     }
-    token.spotPrice = token.spotPrice.truncate(0);
+    // token.spotPrice = token.spotPrice.truncate(0);
     token.save();
   }
 
@@ -150,12 +159,9 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
     } else {
       token.spotPrice = ZERO_BD;
     }
-    token.spotPrice = token.spotPrice.truncate(0);
+    // token.spotPrice = token.spotPrice.truncate(0);
 
     token.save();
-    niftyswapExchange.volume = niftyswapExchange.volume.minus(
-      event.params.tokenAmounts[i]
-    );
   }
 
   niftyswapExchange.totalValueLocked = niftyswapExchange.totalCurrencyReserve.times(
@@ -243,8 +249,10 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     } else {
       token.spotPrice = ZERO_BD;
     }
-    token.spotPrice = token.spotPrice.truncate(0);
-    token.nTokensBought = token.nTokensBought.plus(event.params.tokensBoughtAmounts[i]);
+    // token.spotPrice = token.spotPrice.truncate(0);
+    token.nTokensBought = token.nTokensBought.plus(
+      event.params.tokensBoughtAmounts[i]
+    );
 
     token.save();
   }
@@ -324,8 +332,10 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
     } else {
       token.spotPrice = ZERO_BD;
     }
-    token.spotPrice = token.spotPrice.truncate(0);
-    token.nTokensSold = token.nTokensSold.plus(event.params.tokensSoldAmounts[i]);
+    // token.spotPrice = token.spotPrice.truncate(0);
+    token.nTokensSold = token.nTokensSold.plus(
+      event.params.tokensSoldAmounts[i]
+    );
 
     token.save();
   }
