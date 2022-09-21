@@ -5,7 +5,7 @@
     "codegen": "graph codegen",
     "build": "graph build",
 
-    "deploy-all": "yarn deploy-mainnet && yarn deploy-matic && yarn deploy-rinkeby && yarn deploy-bnb && yarn deploy-arbitrum && yarn deploy-optimism && yarn deploy-avalance && yarn deploy-gnosis",
+    "deploy-all": "yarn deploy-mainnet && yarn deploy-matic && yarn deploy-bnb && yarn deploy-arbitrum && yarn deploy-optimism && yarn deploy-avalanche && yarn deploy-gnosis",
 
     "deploy-mainnet": "yarn generate-mainnet && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-mainnet",
     "create-local-mainnet": "graph create --node http://localhost:8020/ niftyswap/niftyswap-mainnet",
