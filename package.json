@@ -5,7 +5,7 @@
     "codegen": "graph codegen",
     "build": "graph build",
 
-    "deploy-all": "yarn deploy-mainnet && yarn deploy-matic && yarn deploy-rinkeby && yarn deploy-bnb && yarn deploy-arbitrum && yarn deploy-optimism",
+    "deploy-all": "yarn deploy-mainnet && yarn deploy-matic && yarn deploy-rinkeby && yarn deploy-bnb && yarn deploy-arbitrum && yarn deploy-optimism && yarn deploy-avalance && yarn deploy-gnosis",
 
     "deploy-mainnet": "yarn generate-mainnet && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-mainnet",
     "create-local-mainnet": "graph create --node http://localhost:8020/ niftyswap/niftyswap-mainnet",
@@ -31,17 +31,29 @@
     "deploy-local-bnb": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-bnb",
     "generate-bnb": "rm -f subgraph.yaml && mustache ./networks/bnb.json subgraph.template.yaml subgraph.yaml",
 
-    "deploy-arbitrum": "yarn generate-bnb && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-arbitrum",
+    "deploy-arbitrum": "yarn generate-arbitrum && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-arbitrum",
     "create-local-arbitrum": "graph create --node http://localhost:8020/ niftyswap/niftyswap-arbitrum",
     "remove-local-arbitrum": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-arbitrum",
     "deploy-local-arbitrum": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-arbitrum",
     "generate-arbitrum": "rm -f subgraph.yaml && mustache ./networks/arbitrum.json subgraph.template.yaml subgraph.yaml",
 
-    "deploy-optimism": "yarn generate-bnb && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-optimism",
+    "deploy-optimism": "yarn generate-optimism && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-optimism",
     "create-local-optimism": "graph create --node http://localhost:8020/ niftyswap/niftyswap-optimism",
     "remove-local-optimism": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-optimism",
     "deploy-local-optimism": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-optimism",
-    "generate-optimism": "rm -f subgraph.yaml && mustache ./networks/optimism.json subgraph.template.yaml subgraph.yaml"
+    "generate-optimism": "rm -f subgraph.yaml && mustache ./networks/optimism.json subgraph.template.yaml subgraph.yaml",
+
+    "deploy-avalanche": "yarn generate-avalanche && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-avalanche",
+    "create-local-avalanche": "graph create --node http://localhost:8020/ niftyswap/niftyswap-avalanche",
+    "remove-local-avalanche": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-avalanche",
+    "deploy-local-avalanche": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-avalanche",
+    "generate-avalanche": "rm -f subgraph.yaml && mustache ./networks/avalanche.json subgraph.template.yaml subgraph.yaml",
+
+    "deploy-gnosis": "yarn generate-gnosis && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-gnosis",
+    "create-local-gnosis": "graph create --node http://localhost:8020/ niftyswap/niftyswap-gnosis",
+    "remove-local-gnosis": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-gnosis",
+    "deploy-local-gnosis": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-gnosis",
+    "generate-gnosis": "rm -f subgraph.yaml && mustache ./networks/gnosis.json subgraph.template.yaml subgraph.yaml"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.30.2",
