@@ -5,11 +5,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: NiftyswapFactory
-    network: bsc
+    network: xdai
     source:
       address: "0x9196b852437D9Ed92d95715dCbdA4533ffC479E0"
       abi: NiftyswapFactory
-      startBlock: 18871021
+      startBlock: 24281005
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -41,7 +41,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: NiftyswapExchange
-    network: bsc
+    network: xdai
     source:
       abi: NiftyswapExchange
     mapping:
