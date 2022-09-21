@@ -12,7 +12,7 @@ dataSources:
       startBlock: 24281005
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/niftyswap-factory.ts
       entities:
@@ -46,7 +46,7 @@ templates:
       abi: NiftyswapExchange
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/niftyswap-exchange.ts
       entities:
@@ -72,3 +72,5 @@ templates:
           handler: handleTokenPurchase
         - event: CurrencyPurchase(indexed address,indexed address,uint256[],uint256[],uint256[],address[],uint256[])
           handler: handleCurrencyPurchase
+      blockHandlers:
+        - handler: handleBlock

@@ -97,3 +97,4 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   factory.owner = event.params.newOwner.toHex();
   factory.save();
 }
+
