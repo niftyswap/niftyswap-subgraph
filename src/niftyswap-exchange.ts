@@ -3,8 +3,9 @@ import {
   Token,
   Currency,
   Collection,
+  Block
 } from "./../generated/schema";
-import { BigInt, log, BigDecimal } from "@graphprotocol/graph-ts";
+import { BigInt, log, BigDecimal, ethereum } from "@graphprotocol/graph-ts";
 import { ONE_BI, ZERO_BI, ZERO_BD, ONE_BD } from "./utils/constants";
 
 import {
@@ -379,4 +380,23 @@ export function safeDiv(amount0: BigDecimal, amount1: BigDecimal): BigDecimal {
 
 function divRound(a: BigInt, b: BigInt): BigInt {
   return a.mod(b).equals(ZERO_BI) ? a.div(b) : a.div(b).plus(ONE_BI);
+}
+
+export function handleBlock(block: ethereum.Block): void {
+  let id = block.hash.toHex()
+  let blockEntity = new Block(id);
+  blockEntity.number = block.number;
+  blockEntity.timestamp = block.timestamp;
+  blockEntity.parentHash = block.parentHash.toHex();
+  blockEntity.author = block.author.toHex();
+  blockEntity.difficulty = block.difficulty;
+  blockEntity.totalDifficulty = block.totalDifficulty;
+  blockEntity.gasUsed = block.gasUsed;
+  blockEntity.gasLimit = block.gasLimit;
+  blockEntity.receiptsRoot = block.receiptsRoot.toHex();
+  blockEntity.transactionsRoot = block.transactionsRoot.toHex();
+  blockEntity.stateRoot = block.stateRoot.toHex();
+  blockEntity.size = block.size;
+  blockEntity.unclesHash = block.unclesHash.toHex();
+  blockEntity.save();
 }
