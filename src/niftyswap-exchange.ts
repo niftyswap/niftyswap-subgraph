@@ -3,6 +3,7 @@ import {
   Token,
   Currency,
   Collection,
+  CollectionToken,
   Block
 } from "./../generated/schema";
 import { BigInt, log, BigDecimal, ethereum } from "@graphprotocol/graph-ts";
@@ -48,6 +49,33 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
 
     collection.tokenIds.push(tokenConId);
     collection.nTokenIds = collection.nTokenIds.plus(ONE_BI);
+
+    // collectionTokenId = tokenNumber + "-" + CollectionId
+    let collectionTokenId = tokenIds[i]
+      .toString()
+      .concat("-")
+      .concat(niftyswapExchange.collection)
+
+    let collectionToken = CollectionToken.load(collectionTokenId)
+
+    if (collectionToken == null) {
+      collectionToken = new CollectionToken(collectionTokenId)
+      collection.nListedTokenIds = collection.nListedTokenIds.plus(ONE_BI);
+    } else {
+      let tokenIdNotFound = true
+      for (let j = 0; j < collectionToken.tokenIds.length; j++) {
+        if (collectionToken.tokenIds[j] === tokenConId) {
+          tokenIdNotFound = false
+        }
+      }
+      if (tokenIdNotFound) {
+        if(collectionToken.tokenIds.length === 0){
+          collection.nListedTokenIds = collection.nListedTokenIds.plus(ONE_BI);
+        }
+        collectionToken.tokenIds.push(tokenConId)
+      }
+    }
+    collectionToken.save()
 
     // Loading Token or creating if not exist
     let token = Token.load(tokenConId);
@@ -159,6 +187,34 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
       token.spotPrice = currencyReserve.div(tokenAmount);
     } else {
       token.spotPrice = ZERO_BD;
+      // Remove tokenId from list of collection tokenIds
+      // Decrement the nListedTokenIds field if necessary
+      // collectionTokenId = tokenNumber + "-" + CollectionId
+      let collectionTokenId = tokenIds[i]
+        .toString()
+        .concat("-")
+        .concat(niftyswapExchange.collection)
+
+      let collectionToken = CollectionToken.load(collectionTokenId)
+
+      if (collectionToken == null) {
+        log.error("collectionToken not found upon removal of liquidity: {}", [collectionTokenId]);
+      } else {
+
+        // Code to get around closures limitations with WASM
+        let newTokenIds = []
+        for (let j = 0; j < collectionToken.tokenIds.length; j++) {
+          const tokenId = collectionToken.tokenIds[j]
+          if (tokenId === tokenConId) {
+            collectionToken.tokenIds.splice(j, 1)
+          }
+        }
+        if (newTokenIds.length === 0) {
+          collection.nListedTokenIds = collection.nListedTokenIds.minus(ONE_BI);
+          collection.save()
+        }
+        collectionToken.save()
+      }
     }
     // token.spotPrice = token.spotPrice.truncate(0);
 
@@ -387,16 +443,16 @@ export function handleBlock(block: ethereum.Block): void {
   let blockEntity = new Block(id);
   blockEntity.number = block.number;
   blockEntity.timestamp = block.timestamp;
-  blockEntity.parentHash = block.parentHash.toHex();
-  blockEntity.author = block.author.toHex();
-  blockEntity.difficulty = block.difficulty;
-  blockEntity.totalDifficulty = block.totalDifficulty;
-  blockEntity.gasUsed = block.gasUsed;
-  blockEntity.gasLimit = block.gasLimit;
-  blockEntity.receiptsRoot = block.receiptsRoot.toHex();
-  blockEntity.transactionsRoot = block.transactionsRoot.toHex();
-  blockEntity.stateRoot = block.stateRoot.toHex();
-  blockEntity.size = block.size;
-  blockEntity.unclesHash = block.unclesHash.toHex();
+  // blockEntity.parentHash = block.parentHash.toHex();
+  // blockEntity.author = block.author.toHex();
+  // blockEntity.difficulty = block.difficulty;
+  // blockEntity.totalDifficulty = block.totalDifficulty;
+  // blockEntity.gasUsed = block.gasUsed;
+  // blockEntity.gasLimit = block.gasLimit;
+  // blockEntity.receiptsRoot = block.receiptsRoot.toHex();
+  // blockEntity.transactionsRoot = block.transactionsRoot.toHex();
+  // blockEntity.stateRoot = block.stateRoot.toHex();
+  // blockEntity.size = block.size;
+  // blockEntity.unclesHash = block.unclesHash.toHex();
   blockEntity.save();
 }

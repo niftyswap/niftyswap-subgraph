@@ -237,6 +237,15 @@ export class Collection extends Entity {
     this.set("nTokenIds", Value.fromBigInt(value));
   }
 
+  get nListedTokenIds(): BigInt {
+    let value = this.get("nListedTokenIds");
+    return value!.toBigInt();
+  }
+
+  set nListedTokenIds(value: BigInt) {
+    this.set("nListedTokenIds", Value.fromBigInt(value));
+  }
+
   get nExchanges(): BigInt {
     let value = this.get("nExchanges");
     return value!.toBigInt();
@@ -348,6 +357,47 @@ export class Token extends Entity {
 
   set nTokensBought(value: BigInt) {
     this.set("nTokensBought", Value.fromBigInt(value));
+  }
+}
+
+export class CollectionToken extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save CollectionToken entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type CollectionToken must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("CollectionToken", id.toString(), this);
+    }
+  }
+
+  static load(id: string): CollectionToken | null {
+    return changetype<CollectionToken | null>(store.get("CollectionToken", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get tokenIds(): Array<string> {
+    let value = this.get("tokenIds");
+    return value!.toStringArray();
+  }
+
+  set tokenIds(value: Array<string>) {
+    this.set("tokenIds", Value.fromStringArray(value));
   }
 }
 
@@ -522,192 +572,5 @@ export class Block extends Entity {
 
   set timestamp(value: BigInt) {
     this.set("timestamp", Value.fromBigInt(value));
-  }
-
-  get parentHash(): string | null {
-    let value = this.get("parentHash");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set parentHash(value: string | null) {
-    if (!value) {
-      this.unset("parentHash");
-    } else {
-      this.set("parentHash", Value.fromString(<string>value));
-    }
-  }
-
-  get author(): string | null {
-    let value = this.get("author");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set author(value: string | null) {
-    if (!value) {
-      this.unset("author");
-    } else {
-      this.set("author", Value.fromString(<string>value));
-    }
-  }
-
-  get difficulty(): BigInt | null {
-    let value = this.get("difficulty");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set difficulty(value: BigInt | null) {
-    if (!value) {
-      this.unset("difficulty");
-    } else {
-      this.set("difficulty", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
-  get totalDifficulty(): BigInt | null {
-    let value = this.get("totalDifficulty");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set totalDifficulty(value: BigInt | null) {
-    if (!value) {
-      this.unset("totalDifficulty");
-    } else {
-      this.set("totalDifficulty", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
-  get gasUsed(): BigInt | null {
-    let value = this.get("gasUsed");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set gasUsed(value: BigInt | null) {
-    if (!value) {
-      this.unset("gasUsed");
-    } else {
-      this.set("gasUsed", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
-  get gasLimit(): BigInt | null {
-    let value = this.get("gasLimit");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set gasLimit(value: BigInt | null) {
-    if (!value) {
-      this.unset("gasLimit");
-    } else {
-      this.set("gasLimit", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
-  get receiptsRoot(): string | null {
-    let value = this.get("receiptsRoot");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set receiptsRoot(value: string | null) {
-    if (!value) {
-      this.unset("receiptsRoot");
-    } else {
-      this.set("receiptsRoot", Value.fromString(<string>value));
-    }
-  }
-
-  get transactionsRoot(): string | null {
-    let value = this.get("transactionsRoot");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set transactionsRoot(value: string | null) {
-    if (!value) {
-      this.unset("transactionsRoot");
-    } else {
-      this.set("transactionsRoot", Value.fromString(<string>value));
-    }
-  }
-
-  get stateRoot(): string | null {
-    let value = this.get("stateRoot");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set stateRoot(value: string | null) {
-    if (!value) {
-      this.unset("stateRoot");
-    } else {
-      this.set("stateRoot", Value.fromString(<string>value));
-    }
-  }
-
-  get size(): BigInt | null {
-    let value = this.get("size");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set size(value: BigInt | null) {
-    if (!value) {
-      this.unset("size");
-    } else {
-      this.set("size", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
-  get unclesHash(): string | null {
-    let value = this.get("unclesHash");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set unclesHash(value: string | null) {
-    if (!value) {
-      this.unset("unclesHash");
-    } else {
-      this.set("unclesHash", Value.fromString(<string>value));
-    }
   }
 }
