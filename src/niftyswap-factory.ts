@@ -57,6 +57,7 @@ export function handleNewExchange(event: NewExchange): void {
     collection = new Collection(event.params.token.toHexString());
     collection.tokenIds = [];
     collection.nTokenIds = ZERO_BI;
+    collection.nListedTokenIds = ZERO_BI;
     collection.nExchanges = ZERO_BI;
   }
   collection.nExchanges = collection.nExchanges.plus(ONE_BI);

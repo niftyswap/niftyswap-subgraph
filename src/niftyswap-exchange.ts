@@ -60,6 +60,7 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
 
     if (collectionToken == null) {
       collectionToken = new CollectionToken(collectionTokenId)
+      collectionToken.tokenIds = []
       collection.nListedTokenIds = collection.nListedTokenIds.plus(ONE_BI);
     } else {
       let tokenIdNotFound = true
