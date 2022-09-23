@@ -31,8 +31,10 @@ type Collection @entity {
   decimals: BigInt
   # tokens
   tokenIds: [Token!]!
-  # total number of tokens in the collection
+  # total number of tokens in the collection across all exchanges
   nTokenIds: BigInt!
+  # total number of listed tokens in the collection without duplicates across exchanges
+  nListedTokenIds: BigInt!
   # number of Exchanges containing this Collection
   nExchanges: BigInt!
 }
@@ -57,6 +59,14 @@ type Token @entity{
   nTokensSold: BigInt!
   # number of tokens bought
   nTokensBought: BigInt!
+}
+
+# Unique tokens regardless of exchange
+type CollectionToken @entity{
+  # tokenId + "-" + tokenAddress
+  id: ID!
+  # tokens residing in other exchanges
+  tokenIds: [String!]!
 }
 
 type NiftyswapExchange @entity {
@@ -88,15 +98,15 @@ type Block @entity {
   id: ID!
   number: BigInt!
   timestamp: BigInt!
-  parentHash: String
-  author: String
-  difficulty: BigInt
-  totalDifficulty: BigInt
-  gasUsed: BigInt
-  gasLimit: BigInt
-  receiptsRoot: String
-  transactionsRoot: String
-  stateRoot: String
-  size: BigInt
-  unclesHash: String
+  # parentHash: String
+  # author: String
+  # difficulty: BigInt
+  # totalDifficulty: BigInt
+  # gasUsed: BigInt
+  # gasLimit: BigInt
+  # receiptsRoot: String
+  # transactionsRoot: String
+  # stateRoot: String
+  # size: BigInt
+  # unclesHash: String
 }
