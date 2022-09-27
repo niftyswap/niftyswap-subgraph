@@ -59,7 +59,7 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
 
     if (collectionToken == null) {
       collectionToken = new CollectionToken(collectionTokenId)
-      collectionToken.tokenIds = []
+      collectionToken.tokenIds = [tokenConId]
       collection.nListedTokenIds = collection.nListedTokenIds.plus(ONE_BI);
     } else {
       let tokenIdNotFound = true
@@ -199,23 +199,19 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
 
       let collectionToken = CollectionToken.load(collectionTokenId)
 
-      if (collectionToken == null) {
+      if (collectionToken === null) {
         log.error("collectionToken not found upon removal of liquidity: {}", [collectionTokenId]);
       } else {
         // Code to get around closures limitations with WASM
-        let indexToSplice = -1
+        const newTokenIds: string[] = []
         for (let j = 0; j < collectionToken.tokenIds.length; j++) {
           const tokenId = collectionToken.tokenIds[j]
-          if (tokenId === tokenConId) {
-            indexToSplice = j
+          if (tokenId !== tokenConId) {
+            newTokenIds.push(collectionToken.tokenIds[j])
           }
         }
-        if (indexToSplice !== -1) {
-          const collectionTokenTokenIds = collectionToken.tokenIds
-          collectionTokenTokenIds.splice(indexToSplice, 1)
-          collectionToken.tokenIds = collectionTokenTokenIds
-        }
-        if (collectionToken.tokenIds.length === 0) {
+        collectionToken.tokenIds = newTokenIds
+        if (newTokenIds.length === 0) {
           collection.nListedTokenIds = collection.nListedTokenIds.minus(ONE_BI);
           collection.save()
         }
