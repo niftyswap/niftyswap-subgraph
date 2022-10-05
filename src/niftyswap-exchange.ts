@@ -83,6 +83,9 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
     let token = Token.load(tokenConId);
     if (token == null) {
       token = new Token(tokenConId);
+      token.tokenId = tokenIds[i]
+      token.tokenAddress = niftyswapExchange.collection
+      token.exchangeAddress = niftyswapExchange.id
       token.tokenAmount = event.params.tokenAmounts[i];
       token.currencyReserve = event.params.currencyAmounts[i];
       niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
