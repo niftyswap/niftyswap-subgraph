@@ -43,6 +43,12 @@ type Collection @entity {
 type Token @entity{
   # tokenId + "-" + tokenAddress + "-" + ExchangeAddress
   id: ID!
+  # tokenId
+  tokenId: BigInt!
+  # token address
+  tokenAddress: String
+  # exchange address
+  exchangeAddress: String
   # Spot Price
   spotPrice: BigDecimal!
   # Token Amount
