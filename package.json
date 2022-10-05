@@ -5,7 +5,7 @@
     "codegen": "graph codegen",
     "build": "graph build",
 
-    "deploy-all": "yarn deploy-mainnet && yarn deploy-rinkeby && yarn deploy-matic && yarn deploy-bnb && yarn deploy-arbitrum && yarn deploy-optimism && yarn deploy-avalanche && yarn deploy-gnosis && yarn deploy-goerli",
+    "deploy-all": "yarn deploy-mainnet && yarn deploy-matic && yarn deploy-bnb && yarn deploy-arbitrum && yarn deploy-optimism && yarn deploy-avalanche && yarn deploy-gnosis && yarn deploy-goerli",
 
     "deploy-mainnet": "yarn generate-mainnet && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-mainnet",
     "create-local-mainnet": "graph create --node http://localhost:8020/ niftyswap/niftyswap-mainnet",
@@ -19,12 +19,6 @@
     "deploy-local-matic": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap",
     "generate-matic": "rm subgraph.yaml && mustache ./networks/polygon.json subgraph.template.yaml subgraph.yaml",
     
-    "deploy-rinkeby": "yarn generate-rinkeby && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-rinkeby",
-    "create-local-rinkeby": "graph create --node http://localhost:8020/ niftyswap/niftyswap-rinkeby",
-    "remove-local-rinkeby": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-rinkeby",
-    "deploy-local-rinkeby": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-rinkeby",
-    "generate-rinkeby": "rm subgraph.yaml && mustache ./networks/rinkeby.json subgraph.template.yaml subgraph.yaml",
-
     "deploy-bnb": "yarn generate-bnb && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-bnb",
     "create-local-bnb": "graph create --node http://localhost:8020/ niftyswap/niftyswap-bnb",
     "remove-local-bnb": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-bnb",
