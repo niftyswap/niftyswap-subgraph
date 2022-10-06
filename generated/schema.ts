@@ -254,6 +254,32 @@ export class Collection extends Entity {
   set nExchanges(value: BigInt) {
     this.set("nExchanges", Value.fromBigInt(value));
   }
+
+  get latestTradedToken(): string | null {
+    let value = this.get("latestTradedToken");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set latestTradedToken(value: string | null) {
+    if (!value) {
+      this.unset("latestTradedToken");
+    } else {
+      this.set("latestTradedToken", Value.fromString(<string>value));
+    }
+  }
+
+  get latestTradedTimestamp(): BigInt {
+    let value = this.get("latestTradedTimestamp");
+    return value!.toBigInt();
+  }
+
+  set latestTradedTimestamp(value: BigInt) {
+    this.set("latestTradedTimestamp", Value.fromBigInt(value));
+  }
 }
 
 export class Token extends Entity {

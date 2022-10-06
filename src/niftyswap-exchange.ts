@@ -314,6 +314,12 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     );
 
     token.save();
+
+    // updating the latest traded item
+    collection.latestTradedToken = tokenConId
+    collection.latestTradedTimestamp = event.block.timestamp
+    
+    collection.save()
   }
 
   niftyswapExchange.totalValueLocked = niftyswapExchange.totalCurrencyReserve.times(

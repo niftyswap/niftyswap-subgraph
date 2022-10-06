@@ -37,6 +37,10 @@ type Collection @entity {
   nListedTokenIds: BigInt!
   # number of Exchanges containing this Collection
   nExchanges: BigInt!
+  # latest traded token id
+  latestTradedToken: ID
+  # latest traded token timestamp
+  latestTradedTimestamp: BigInt!
 }
 
 # Specific to an exchange
