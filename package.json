@@ -7,7 +7,7 @@
 
     "deploy-all": "yarn deploy-mainnet && yarn deploy-matic && yarn deploy-mumbai && yarn deploy-bnb && yarn deploy-arbitrum && yarn deploy-optimism && yarn deploy-avalanche && yarn deploy-gnosis && yarn deploy-goerli",
 
-    "deploy-mainnet": "yarn generate-mainnet && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-mainnet",
+    "deploy-mainnet": "yarn generate-mainnet && graph deploy --studio niftyswap-mainnet",
     "create-local-mainnet": "graph create --node http://localhost:8020/ niftyswap/niftyswap-mainnet",
     "remove-local-mainnet": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-mainnet",
     "deploy-local-mainnet": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-mainnet",
