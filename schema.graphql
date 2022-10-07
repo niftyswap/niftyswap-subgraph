@@ -96,4 +96,6 @@ type NiftyswapExchange @entity {
   totalCurrencyReserve: BigInt!
   # number of swaps
   nSwaps: BigInt!
+  # amount of tokenIds listen on the exchange
+  nListedTokenIds: BigInt!
 }

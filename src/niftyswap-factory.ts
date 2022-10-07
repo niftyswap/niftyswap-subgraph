@@ -81,6 +81,7 @@ export function handleNewExchange(event: NewExchange): void {
   niftyswapExchange.totalCurrencyReserve = ZERO_BI;
   niftyswapExchange.volume = ZERO_BI;
   niftyswapExchange.nSwaps = ZERO_BI;
+  niftyswapExchange.nListedTokenIds = ZERO_BI;
   niftyswapExchange.save();
   currency.save();
 

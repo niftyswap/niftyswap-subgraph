@@ -88,6 +88,7 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
       niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
         event.params.currencyAmounts[i]
       );
+      niftyswapExchange.nListedTokenIds = niftyswapExchange.nListedTokenIds.plus(ONE_BI)
       token.volume = ZERO_BI;
       token.nSwaps = ZERO_BI;
       token.nTokensBought = ZERO_BI;
@@ -103,6 +104,7 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
         niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
           event.params.currencyAmounts[i]
         );
+        niftyswapExchange.nListedTokenIds = niftyswapExchange.nListedTokenIds.plus(ONE_BI)
       } else {
         let tokensToAdd = event.params.tokenAmounts[i];
         let numerator = tokensToAdd.times(currencyReserve);
@@ -188,6 +190,7 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
       let tokenAmount = token.tokenAmount.toBigDecimal();
       token.spotPrice = currencyReserve.div(tokenAmount);
     } else {
+      niftyswapExchange.nListedTokenIds = niftyswapExchange.nListedTokenIds.minus(ONE_BI)
       token.spotPrice = ZERO_BD;
       // Remove tokenId from list of collection tokenIds
       // Decrement the nListedTokenIds field if necessary
@@ -220,6 +223,7 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
     }
     // token.spotPrice = token.spotPrice.truncate(0);
 
+    niftyswapExchange.save()
     token.save();
   }
 
