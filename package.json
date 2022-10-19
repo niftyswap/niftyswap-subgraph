@@ -1,7 +1,7 @@
 {
   "name": "niftyswap",
   "license": "UNLICENSED",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "print-version": "echo $npm_package_version",
     "update-version": "npm version patch",
