@@ -1,69 +1,58 @@
 {
   "name": "niftyswap",
   "license": "UNLICENSED",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "print-version": "echo $npm_package_version",
     "update-version": "npm version patch",
     "codegen": "graph codegen",
     "build": "graph build",
-
     "deploy-all": "yarn update-version && yarn deploy-mainnet && yarn deploy-matic && yarn deploy-mumbai && yarn deploy-bnb && yarn deploy-arbitrum && yarn deploy-optimism && yarn deploy-avalanche && yarn deploy-gnosis && yarn deploy-goerli",
-
     "deploy-mainnet": "yarn generate-mainnet && graph deploy --studio niftyswap-mainnet --version-label $npm_package_version",
     "create-local-mainnet": "graph create --node http://localhost:8020/ niftyswap/niftyswap-mainnet",
     "remove-local-mainnet": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-mainnet",
     "deploy-local-mainnet": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-mainnet",
     "generate-mainnet": "rm subgraph.yaml && mustache ./networks/mainnet.json subgraph.template.yaml subgraph.yaml",
-
     "deploy-matic": "yarn generate-matic && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap",
     "create-local-matic": "graph create --node http://localhost:8020/ niftyswap/niftyswap",
     "remove-local-matic": "graph remove --node http://localhost:8020/ niftyswap/niftyswap",
     "deploy-local-matic": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap",
     "generate-matic": "rm subgraph.yaml && mustache ./networks/polygon.json subgraph.template.yaml subgraph.yaml",
-    
     "deploy-bnb": "yarn generate-bnb && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-bnb",
     "create-local-bnb": "graph create --node http://localhost:8020/ niftyswap/niftyswap-bnb",
     "remove-local-bnb": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-bnb",
     "deploy-local-bnb": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-bnb",
     "generate-bnb": "rm -f subgraph.yaml && mustache ./networks/bnb.json subgraph.template.yaml subgraph.yaml",
-
     "deploy-arbitrum": "yarn generate-arbitrum && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-arbitrum",
     "create-local-arbitrum": "graph create --node http://localhost:8020/ niftyswap/niftyswap-arbitrum",
     "remove-local-arbitrum": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-arbitrum",
     "deploy-local-arbitrum": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-arbitrum",
     "generate-arbitrum": "rm -f subgraph.yaml && mustache ./networks/arbitrum.json subgraph.template.yaml subgraph.yaml",
-
     "deploy-optimism": "yarn generate-optimism && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-optimism",
     "create-local-optimism": "graph create --node http://localhost:8020/ niftyswap/niftyswap-optimism",
     "remove-local-optimism": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-optimism",
     "deploy-local-optimism": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-optimism",
     "generate-optimism": "rm -f subgraph.yaml && mustache ./networks/optimism.json subgraph.template.yaml subgraph.yaml",
-
     "deploy-avalanche": "yarn generate-avalanche && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-avalanche",
     "create-local-avalanche": "graph create --node http://localhost:8020/ niftyswap/niftyswap-avalanche",
     "remove-local-avalanche": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-avalanche",
     "deploy-local-avalanche": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-avalanche",
     "generate-avalanche": "rm -f subgraph.yaml && mustache ./networks/avalanche.json subgraph.template.yaml subgraph.yaml",
-
     "deploy-gnosis": "yarn generate-gnosis && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-gnosis",
     "create-local-gnosis": "graph create --node http://localhost:8020/ niftyswap/niftyswap-gnosis",
     "remove-local-gnosis": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-gnosis",
     "deploy-local-gnosis": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-gnosis",
     "generate-gnosis": "rm -f subgraph.yaml && mustache ./networks/gnosis.json subgraph.template.yaml subgraph.yaml",
-
     "deploy-goerli": "yarn generate-goerli && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-goerli",
     "create-local-goerli": "graph create --node http://localhost:8020/ niftyswap/niftyswap-goerli",
     "remove-local-goerli": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-goerli",
     "deploy-local-goerli": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-goerli",
     "generate-goerli": "rm -f subgraph.yaml && mustache ./networks/goerli.json subgraph.template.yaml subgraph.yaml",
-
     "deploy-mumbai": "yarn generate-mumbai && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/niftyswap-mumbai",
     "create-local-mumbai": "graph create --node http://localhost:8020/ niftyswap/niftyswap-mumbai",
     "remove-local-mumbai": "graph remove --node http://localhost:8020/ niftyswap/niftyswap-mumbai",
     "deploy-local-mumbai": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-mumbai",
     "generate-mumbai": "rm -f subgraph.yaml && mustache ./networks/mumbai.json subgraph.template.yaml subgraph.yaml"
-
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.30.2",
