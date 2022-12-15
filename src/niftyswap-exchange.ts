@@ -96,6 +96,7 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
       token.nSwaps = ZERO_BI;
       token.nTokensBought = ZERO_BI;
       token.nTokensSold = ZERO_BI;
+      token.liquidityPositionSnapshots = []
     } else {
       log.debug("Liquidity already present: {}", [token.id]);
       let currencyReserve = token.currencyReserve;
@@ -121,6 +122,7 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
     }
 
     token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
+    const liquidityPosition = createLiquidityPosition()
 
     // Spot price calculation
     if (token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI) {

@@ -69,6 +69,8 @@ type Token @entity{
   nTokensSold: BigInt!
   # number of tokens bought
   nTokensBought: BigInt!
+  # liquidity snapshots
+  liquidityPositionSnapshots: [LiquidityPositionSnapshot!]! @derivedFrom(field: "token")
 }
 
 # Unique tokens regardless of exchange
@@ -104,4 +106,24 @@ type NiftyswapExchange @entity {
   nSwaps: BigInt!
   # amount of tokenIds listen on the exchange
   nListedTokenIds: BigInt!
+}
+
+type User @entity {
+  # user id for the token
+  id: ID!
+  # list of liquidity snapshots of the user
+  liquidityPositionSnapshots: [LiquidityPositionSnapshot!]! @derivedFrom(field: "user")
+}
+
+union SnapshotEntity = Token | User
+
+type LiquidityPositionSnapshot @entity {
+  # id of the snapshot
+  id: ID!
+  # timestamp when the change in liquidty occurred
+  timestamp: BigInt!
+  # TVL at the moment of the snapshot
+  totalValueLocked: BigInt!
+  token: Token
+  user: User
 }
