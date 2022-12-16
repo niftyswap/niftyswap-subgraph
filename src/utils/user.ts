@@ -9,7 +9,7 @@ import {
 import { ZERO_BI } from "./constants";
 
 export function getUser (userAddress: Address, token: Token): User {
-  const userId = userAddress.toString().concat("-").concat(token.id)
+  const userId = userAddress.toHexString().concat("-").concat(token.id)
   let user = User.load(userId)
   if (!user) {
     user = new User(userId)

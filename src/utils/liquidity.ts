@@ -36,7 +36,6 @@ export function createTokenLiquiditySnapshot(event: ethereum.Event, token: Token
   token.liquidities = totalBalance
 
   snapshot.save()
-  token.save()
 }
 
 export function createUserLiquiditySnapshot(event: ethereum.Event, token: Token, userAddress: Address): void {
