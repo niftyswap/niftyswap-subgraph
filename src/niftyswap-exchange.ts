@@ -127,16 +127,7 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
 
     createTokenLiquiditySnapshot(event, token)
 
-    // createTokenLiquiditySnapshot({
-    //   event,
-    //   token,
-    // })
-
-    // createUserLiquiditySnapshot({
-    //   userAddress: event.params.provider,
-    //   event,
-    //   token,
-    // })
+    createUserLiquiditySnapshot(event, token, event.params.provider)
 
     // Spot price calculation
     if (token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI) {
@@ -200,16 +191,9 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
     );
     token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
 
-    // createTokenLiquiditySnapshot({
-    //   event,
-    //   token,
-    // })
+    createTokenLiquiditySnapshot(event, token)
 
-    // createUserLiquiditySnapshot({
-    //   userAddress: event.params.provider,
-    //   event,
-    //   token,
-    // })
+    createUserLiquiditySnapshot(event, token, event.params.provider)
 
     niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.minus(
       event.params.details[i].currencyAmount
