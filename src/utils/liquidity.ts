@@ -36,7 +36,9 @@ export function createTokenLiquiditySnapshot(event: ethereum.Event, tokenId: str
 
   snapshot.save()
 
-  token.liquiditySnapshots.push(snapshot.id)
+  const liquiditySnapshots = token.liquiditySnapshots
+  liquiditySnapshots.push(snapshot.id)
+  token.liquiditySnapshots = liquiditySnapshots
   token.save()
 }
 
@@ -57,7 +59,10 @@ export function createUserLiquiditySnapshot(event: ethereum.Event, tokenId: stri
 
   snapshot.save()
 
-  user.liquiditySnapshots.push(snapshot.id)
+  const liquiditySnapshots = user.liquiditySnapshots
+  liquiditySnapshots.push(snapshot.id)
+  user.liquiditySnapshots = liquiditySnapshots
+  
   user.liquidities = balance
   user.save()
 }
