@@ -14,6 +14,7 @@ import {
   LiquidityRemoved,
   TokensPurchase,
   CurrencyPurchase,
+  NiftyswapExchange as NiftyswapExchangeContract,
 } from "./../generated/NiftyswapFactory/NiftyswapExchange";
 
 export function handleLiquidityAdded(event: LiquidityAdded): void {
@@ -125,10 +126,6 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
 
     token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
 
-    createTokenLiquiditySnapshot(event, token)
-
-    createUserLiquiditySnapshot(event, token, event.params.provider)
-
     // Spot price calculation
     if (token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI) {
       token.spotPrice = token.currencyReserve.divDecimal(
@@ -138,7 +135,12 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
       token.spotPrice = ZERO_BD;
     }
     // token.spotPrice = token.spotPrice.truncate(0);
+
     token.save();
+
+    createTokenLiquiditySnapshot(event, token.id)
+
+    createUserLiquiditySnapshot(event, token.id, event.params.provider)
   }
 
   collection.save();
@@ -191,10 +193,6 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
     );
     token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
 
-    createTokenLiquiditySnapshot(event, token)
-
-    createUserLiquiditySnapshot(event, token, event.params.provider)
-
     niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.minus(
       event.params.details[i].currencyAmount
     );
@@ -238,8 +236,16 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
     }
     // token.spotPrice = token.spotPrice.truncate(0);
 
-    niftyswapExchange.save()
+
+    const niftyswapExchangeContract = NiftyswapExchangeContract.bind(event.address)
+    const totalBalance = niftyswapExchangeContract.getTotalSupply([token.tokenId])[0]
+    token.liquidities = totalBalance
+
     token.save();
+
+    createTokenLiquiditySnapshot(event, token.id)
+
+    createUserLiquiditySnapshot(event, token.id, event.params.provider)
   }
 
   niftyswapExchange.totalValueLocked = niftyswapExchange.totalCurrencyReserve.times(
@@ -311,8 +317,6 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     let newTVL = token.currencyReserve.times(BigInt.fromI32(2));
     token.totalValueLocked = newTVL;
 
-    createTokenLiquiditySnapshot(event, token)
-
     token.nSwaps = token.nSwaps.plus(ONE_BI);
     niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
       buyPrice
@@ -334,7 +338,13 @@ export function handleTokenPurchase(event: TokensPurchase): void {
       event.params.tokensBoughtAmounts[i]
     );
 
+    const niftyswapExchangeContract = NiftyswapExchangeContract.bind(event.address)
+    const totalBalance = niftyswapExchangeContract.getTotalSupply([token.tokenId])[0]
+    token.liquidities = totalBalance
+
     token.save();
+
+    createTokenLiquiditySnapshot(event, token.id)
 
     // updating the latest traded item
     collection.latestTradedToken = tokenConId
@@ -404,8 +414,6 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
     token.volume = token.volume.plus(sellPrice);
     token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
 
-    createTokenLiquiditySnapshot(event, token)
-
     token.nSwaps = token.nSwaps.plus(ONE_BI);
     niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.minus(
       sellPrice
@@ -426,6 +434,8 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
     );
 
     token.save();
+
+    createTokenLiquiditySnapshot(event, token.id)
   }
 
   niftyswapExchange.totalValueLocked = niftyswapExchange.totalCurrencyReserve.times(

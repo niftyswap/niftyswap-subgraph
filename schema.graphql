@@ -70,7 +70,9 @@ type Token @entity{
   # number of tokens bought
   nTokensBought: BigInt!
   # liquidity snapshots
-  liquiditySnapshots: [TokenLiquiditySnapshot!]! @derivedFrom(field: "token")
+  # TODO: find out why derived field is not working
+  # liquiditySnapshots: [TokenLiquiditySnapshot!]! @derivedFrom(field: "token")
+  liquiditySnapshots: [TokenLiquiditySnapshot!]!
   # total liquidity token suply
   liquidities: BigInt!
 }
@@ -115,7 +117,9 @@ type User @entity {
   # userAddress + "-" + tokenId + "-" + tokenAddress + "-" + ExchangeAddress
   id: ID!
   # list of liquidity snapshots of the user
-  liquiditySnapshots: [UserLiquiditySnapshot!]! @derivedFrom(field: "user")
+  # TODO: find out why derived field is not working
+  # liquiditySnapshots: [UserLiquiditySnapshot!]! @derivedFrom(field: "user")
+  liquiditySnapshots: [UserLiquiditySnapshot!]!
   # liquidity tokens owned by the user
   liquidities: BigInt!
 }
@@ -132,7 +136,7 @@ type TokenLiquiditySnapshot @entity {
   # Liquidities total
   liquidities: BigInt!
   # token for which the snapshot is taken
-  token: Token
+  token: Token!
 }
 
 type UserLiquiditySnapshot @entity {
@@ -143,5 +147,5 @@ type UserLiquiditySnapshot @entity {
   # Liquidities total
   liquidities: BigInt!
   # user for which the snapshot is taken
-  user: User
+  user: User!
 }

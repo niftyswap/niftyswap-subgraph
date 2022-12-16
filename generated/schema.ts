@@ -743,21 +743,13 @@ export class TokenLiquiditySnapshot extends Entity {
     this.set("liquidities", Value.fromBigInt(value));
   }
 
-  get token(): string | null {
+  get token(): string {
     let value = this.get("token");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value!.toString();
   }
 
-  set token(value: string | null) {
-    if (!value) {
-      this.unset("token");
-    } else {
-      this.set("token", Value.fromString(<string>value));
-    }
+  set token(value: string) {
+    this.set("token", Value.fromString(value));
   }
 }
 
@@ -815,20 +807,12 @@ export class UserLiquiditySnapshot extends Entity {
     this.set("liquidities", Value.fromBigInt(value));
   }
 
-  get user(): string | null {
+  get user(): string {
     let value = this.get("user");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value!.toString();
   }
 
-  set user(value: string | null) {
-    if (!value) {
-      this.unset("user");
-    } else {
-      this.set("user", Value.fromString(<string>value));
-    }
+  set user(value: string) {
+    this.set("user", Value.fromString(value));
   }
 }
