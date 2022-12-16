@@ -7,6 +7,7 @@ import {
 } from "./../generated/schema";
 import { BigInt, log, BigDecimal, ethereum } from "@graphprotocol/graph-ts";
 import { ONE_BI, ZERO_BI, ZERO_BD, ONE_BD } from "./utils/constants";
+import { createTokenLiquiditySnapshot, createUserLiquiditySnapshot } from "./utils/liquidity"
 
 import {
   LiquidityAdded,
@@ -96,7 +97,8 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
       token.nSwaps = ZERO_BI;
       token.nTokensBought = ZERO_BI;
       token.nTokensSold = ZERO_BI;
-      token.liquidityPositionSnapshots = []
+      token.liquiditySnapshots = []
+      token.liquidities = ZERO_BI
     } else {
       log.debug("Liquidity already present: {}", [token.id]);
       let currencyReserve = token.currencyReserve;
@@ -122,7 +124,19 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
     }
 
     token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
-    const liquidityPosition = createLiquidityPosition()
+
+    createTokenLiquiditySnapshot(event, token)
+
+    // createTokenLiquiditySnapshot({
+    //   event,
+    //   token,
+    // })
+
+    // createUserLiquiditySnapshot({
+    //   userAddress: event.params.provider,
+    //   event,
+    //   token,
+    // })
 
     // Spot price calculation
     if (token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI) {
@@ -185,6 +199,18 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
       event.params.details[i].currencyAmount
     );
     token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
+
+    // createTokenLiquiditySnapshot({
+    //   event,
+    //   token,
+    // })
+
+    // createUserLiquiditySnapshot({
+    //   userAddress: event.params.provider,
+    //   event,
+    //   token,
+    // })
+
     niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.minus(
       event.params.details[i].currencyAmount
     );

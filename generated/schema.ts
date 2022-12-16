@@ -428,13 +428,22 @@ export class Token extends Entity {
     this.set("nTokensBought", Value.fromBigInt(value));
   }
 
-  get liquidityPositionSnapshots(): Array<string> {
-    let value = this.get("liquidityPositionSnapshots");
+  get liquiditySnapshots(): Array<string> {
+    let value = this.get("liquiditySnapshots");
     return value!.toStringArray();
   }
 
-  set liquidityPositionSnapshots(value: Array<string>) {
-    this.set("liquidityPositionSnapshots", Value.fromStringArray(value));
+  set liquiditySnapshots(value: Array<string>) {
+    this.set("liquiditySnapshots", Value.fromStringArray(value));
+  }
+
+  get liquidities(): BigInt {
+    let value = this.get("liquidities");
+    return value!.toBigInt();
+  }
+
+  set liquidities(value: BigInt) {
+    this.set("liquidities", Value.fromBigInt(value));
   }
 }
 
@@ -643,17 +652,26 @@ export class User extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get liquidityPositionSnapshots(): Array<string> {
-    let value = this.get("liquidityPositionSnapshots");
+  get liquiditySnapshots(): Array<string> {
+    let value = this.get("liquiditySnapshots");
     return value!.toStringArray();
   }
 
-  set liquidityPositionSnapshots(value: Array<string>) {
-    this.set("liquidityPositionSnapshots", Value.fromStringArray(value));
+  set liquiditySnapshots(value: Array<string>) {
+    this.set("liquiditySnapshots", Value.fromStringArray(value));
+  }
+
+  get liquidities(): BigInt {
+    let value = this.get("liquidities");
+    return value!.toBigInt();
+  }
+
+  set liquidities(value: BigInt) {
+    this.set("liquidities", Value.fromBigInt(value));
   }
 }
 
-export class LiquidityPositionSnapshot extends Entity {
+export class TokenLiquiditySnapshot extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -663,20 +681,20 @@ export class LiquidityPositionSnapshot extends Entity {
     let id = this.get("id");
     assert(
       id != null,
-      "Cannot save LiquidityPositionSnapshot entity without an ID"
+      "Cannot save TokenLiquiditySnapshot entity without an ID"
     );
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type LiquidityPositionSnapshot must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type TokenLiquiditySnapshot must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("LiquidityPositionSnapshot", id.toString(), this);
+      store.set("TokenLiquiditySnapshot", id.toString(), this);
     }
   }
 
-  static load(id: string): LiquidityPositionSnapshot | null {
-    return changetype<LiquidityPositionSnapshot | null>(
-      store.get("LiquidityPositionSnapshot", id)
+  static load(id: string): TokenLiquiditySnapshot | null {
+    return changetype<TokenLiquiditySnapshot | null>(
+      store.get("TokenLiquiditySnapshot", id)
     );
   }
 
@@ -707,6 +725,24 @@ export class LiquidityPositionSnapshot extends Entity {
     this.set("totalValueLocked", Value.fromBigInt(value));
   }
 
+  get volume(): BigInt {
+    let value = this.get("volume");
+    return value!.toBigInt();
+  }
+
+  set volume(value: BigInt) {
+    this.set("volume", Value.fromBigInt(value));
+  }
+
+  get liquidities(): BigInt {
+    let value = this.get("liquidities");
+    return value!.toBigInt();
+  }
+
+  set liquidities(value: BigInt) {
+    this.set("liquidities", Value.fromBigInt(value));
+  }
+
   get token(): string | null {
     let value = this.get("token");
     if (!value || value.kind == ValueKind.NULL) {
@@ -722,6 +758,61 @@ export class LiquidityPositionSnapshot extends Entity {
     } else {
       this.set("token", Value.fromString(<string>value));
     }
+  }
+}
+
+export class UserLiquiditySnapshot extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save UserLiquiditySnapshot entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type UserLiquiditySnapshot must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("UserLiquiditySnapshot", id.toString(), this);
+    }
+  }
+
+  static load(id: string): UserLiquiditySnapshot | null {
+    return changetype<UserLiquiditySnapshot | null>(
+      store.get("UserLiquiditySnapshot", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
+    return value!.toBigInt();
+  }
+
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
+  }
+
+  get liquidities(): BigInt {
+    let value = this.get("liquidities");
+    return value!.toBigInt();
+  }
+
+  set liquidities(value: BigInt) {
+    this.set("liquidities", Value.fromBigInt(value));
   }
 
   get user(): string | null {
