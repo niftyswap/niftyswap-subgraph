@@ -311,6 +311,8 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     let newTVL = token.currencyReserve.times(BigInt.fromI32(2));
     token.totalValueLocked = newTVL;
 
+    createTokenLiquiditySnapshot(event, token)
+
     token.nSwaps = token.nSwaps.plus(ONE_BI);
     niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
       buyPrice
@@ -401,6 +403,8 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
     token.currencyReserve = token.currencyReserve.minus(sellPrice);
     token.volume = token.volume.plus(sellPrice);
     token.totalValueLocked = token.currencyReserve.times(BigInt.fromI32(2));
+
+    createTokenLiquiditySnapshot(event, token)
 
     token.nSwaps = token.nSwaps.plus(ONE_BI);
     niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.minus(
