@@ -1,6 +1,7 @@
 import {
   Token,
   CollectionToken,
+  Collection,
 } from "./../generated/schema";
 import { BigInt, log } from "@graphprotocol/graph-ts";
 import { ONE_BI, ZERO_BI, ZERO_BD } from "./utils/constants";
@@ -12,9 +13,15 @@ import {
   getNiftyswapExchangeWithError,
   getExchangeTokenWithError,
 } from './utils/getters'
+
 import {
   divRound
 } from './utils/math'
+
+import {  
+  addNewListedCollectionToken,
+  createNewExchangeToken,
+} from './utils/token'
 
 import {
   LiquidityAdded,
@@ -37,51 +44,12 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
     collection.nTokenIds = collection.nTokenIds.plus(ONE_BI);
 
     // collectionTokenId = tokenNumber + "-" + CollectionId
-    let collectionTokenId = getCollectionTokenId(tokenIds[i], niftyswapExchange.collection)
-
-    let collectionToken = CollectionToken.load(collectionTokenId)
-
-    if (collectionToken == null) {
-      collectionToken = new CollectionToken(collectionTokenId)
-      collectionToken.tokenIds = [tokenExchangeId]
-      collection.nListedTokenIds = collection.nListedTokenIds.plus(ONE_BI);
-    } else {
-      let tokenIdNotFound = true
-      for (let j = 0; j < collectionToken.tokenIds.length; j++) {
-        if (collectionToken.tokenIds[j] === tokenExchangeId) {
-          tokenIdNotFound = false
-        }
-      }
-      if (tokenIdNotFound) {
-        if(collectionToken.tokenIds.length === 0){
-          collection.nListedTokenIds = collection.nListedTokenIds.plus(ONE_BI);
-        }
-        const collectionTokenTokenIds = collectionToken.tokenIds 
-        collectionTokenTokenIds.push(tokenExchangeId)
-        collectionToken.tokenIds = collectionTokenTokenIds
-      }
-    }
-    collectionToken.save()
+    addNewListedCollectionToken(tokenIds[i], niftyswapExchange, collection)
 
     // Loading Token or creating if not exist
     let token = Token.load(tokenExchangeId);
     if (token == null) {
-      token = new Token(tokenExchangeId);
-      token.tokenId = tokenIds[i]
-      token.tokenAddress = niftyswapExchange.collection
-      token.exchangeAddress = niftyswapExchange.id
-      token.tokenAmount = event.params.tokenAmounts[i];
-      token.currencyReserve = event.params.currencyAmounts[i];
-      niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
-        event.params.currencyAmounts[i]
-      );
-      niftyswapExchange.nListedTokenIds = niftyswapExchange.nListedTokenIds.plus(ONE_BI)
-      token.volume = ZERO_BI;
-      token.nSwaps = ZERO_BI;
-      token.nTokensBought = ZERO_BI;
-      token.nTokensSold = ZERO_BI;
-      token.liquiditySnapshots = []
-      token.liquidities = ZERO_BI
+      token = createNewExchangeToken(tokenIds[i], niftyswapExchange, event.params.tokenAmounts[i], event.params.currencyAmounts[i])
     } else {
       log.debug("Liquidity already present: {}", [token.id]);
       let currencyReserve = token.currencyReserve;
