@@ -8,6 +8,7 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy-dev": "yarn deploy-matic-dev",
+    "deploy-dev-mumbai": "yarn deploy-mumbai-dev",
     "deploy-all": "yarn update-version && yarn deploy-mainnet && yarn deploy-mainnet-hosted && yarn deploy-matic-hosted && yarn deploy-mumbai && yarn deploy-bnb && yarn deploy-arbitrum && yarn deploy-optimism && yarn deploy-avalanche && yarn deploy-gnosis && yarn deploy-goerli",
     "deploy-mainnet": "yarn generate-mainnet && graph deploy --studio niftyswap-mainnet --version-label $npm_package_version",
     "create-local-mainnet": "graph create --node http://localhost:8020/ niftyswap/niftyswap-mainnet",
@@ -21,6 +22,12 @@
     "deploy-local-mainnet-hosted": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 niftyswap/niftyswap-mainnet",
     "generate-mainnet-hosted": "rm subgraph.yaml && mustache ./networks/mainnet.json subgraph.template.yaml subgraph.yaml",
     
+    "deploy-mumbai-dev": "yarn generate-mumbai && graph deploy --node https://api.thegraph.com/deploy/ samuelea/dev-niftyswap-mumbai",
+    "create-local-mumbai-dev": "graph create --node http://localhost:8020/ samuelea/dev-niftyswap-mumbai",
+    "remove-local-mumbai-dev": "graph remove --node http://localhost:8020/ samuelea/dev-niftyswap-mumbai",
+    "deploy-local-mumbai-dev": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 samuelea/dev-niftyswap-mumbai",
+    "generate-mumbai-dev": "rm -f subgraph.yaml && mustache ./networks/mumbai.json subgraph.template.yaml subgraph.yaml",
+
     "deploy-matic-dev": "yarn generate-matic-dev && graph deploy --node https://api.thegraph.com/deploy/ niftyswap/dev-niftyswap-polygon",
     "create-local-matic-dev": "graph create --node http://localhost:8020/ niftyswap/dev-niftyswap-polygon",
     "remove-local-matic-dev": "graph remove --node http://localhost:8020/ niftyswap/dev-niftyswap-polygon",
