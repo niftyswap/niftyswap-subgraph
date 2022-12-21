@@ -7,7 +7,7 @@
     "update-version": "npm version patch",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy-dev": "yarb deploy-matic-dev",
+    "deploy-dev": "yarn deploy-matic-dev",
     "deploy-all": "yarn update-version && yarn deploy-mainnet && yarn deploy-mainnet-hosted && yarn deploy-matic-hosted && yarn deploy-mumbai && yarn deploy-bnb && yarn deploy-arbitrum && yarn deploy-optimism && yarn deploy-avalanche && yarn deploy-gnosis && yarn deploy-goerli",
     "deploy-mainnet": "yarn generate-mainnet && graph deploy --studio niftyswap-mainnet --version-label $npm_package_version",
     "create-local-mainnet": "graph create --node http://localhost:8020/ niftyswap/niftyswap-mainnet",
