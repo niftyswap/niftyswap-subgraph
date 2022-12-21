@@ -1,7 +1,6 @@
 import {
   Token,
   CollectionToken,
-  Collection,
 } from "./../generated/schema";
 import { BigInt, log } from "@graphprotocol/graph-ts";
 import { ONE_BI, ZERO_BI, ZERO_BD } from "./utils/constants";
@@ -21,6 +20,7 @@ import {
 import {  
   addNewListedCollectionToken,
   createNewExchangeToken,
+  updateCurrencyReservesOnAddLiquidity
 } from './utils/token'
 
 import {
@@ -51,26 +51,7 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
     if (token == null) {
       token = createNewExchangeToken(tokenIds[i], niftyswapExchange, event.params.tokenAmounts[i], event.params.currencyAmounts[i])
     } else {
-      log.debug("Liquidity already present: {}", [token.id]);
-      let currencyReserve = token.currencyReserve;
-      let currentTokenReserve = token.tokenAmount;
-
-      // Special case
-      if (currentTokenReserve.equals(ZERO_BI)) {
-        token.currencyReserve = event.params.currencyAmounts[i];
-        niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
-          event.params.currencyAmounts[i]
-        );
-        niftyswapExchange.nListedTokenIds = niftyswapExchange.nListedTokenIds.plus(ONE_BI)
-      } else {
-        let tokensToAdd = event.params.tokenAmounts[i];
-        let numerator = tokensToAdd.times(currencyReserve);
-        let currencyAmount = divRound(numerator, currentTokenReserve);
-        token.currencyReserve = token.currencyReserve.plus(currencyAmount);
-        niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
-          currencyAmount
-        );
-      }
+      updateCurrencyReservesOnAddLiquidity(token, niftyswapExchange, event.params.currencyAmounts[i], event.params.tokenAmounts[i])
       token.tokenAmount = token.tokenAmount.plus(event.params.tokenAmounts[i]);
     }
 
@@ -89,7 +70,6 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
     token.save();
 
     createTokenLiquiditySnapshot(event, token.id)
-
     createUserLiquiditySnapshot(event, token.id, event.params.provider)
   }
 
@@ -120,16 +100,19 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
       event.params.details[i].currencyAmount
     );
 
+    const hasLiquidity = token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI
+
     // Spot price calculation
-    if (token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI) {
+    if (hasLiquidity) {
       let currencyReserve = token.currencyReserve.toBigDecimal();
       let tokenAmount = token.tokenAmount.toBigDecimal();
       token.spotPrice = currencyReserve.div(tokenAmount);
     } else {
       niftyswapExchange.nListedTokenIds = niftyswapExchange.nListedTokenIds.minus(ONE_BI)
       token.spotPrice = ZERO_BD;
-      // Remove tokenId from list of collection tokenIds
-      // Decrement the nListedTokenIds field if necessary
+    }
+
+    if (!hasLiquidity) {
       // collectionTokenId = tokenNumber + "-" + CollectionId
       let collectionTokenId = getCollectionTokenId(tokenIds[i], niftyswapExchange.collection)
 
@@ -154,6 +137,7 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
         collectionToken.save()
       }
     }
+
 
     const niftyswapExchangeContract = NiftyswapExchangeContract.bind(event.address)
     const totalBalance = niftyswapExchangeContract.getTotalSupply([token.tokenId])[0]

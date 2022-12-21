@@ -4,12 +4,13 @@ import {
   Collection,
   NiftyswapExchange
 } from "../../generated/schema";
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 import { ZERO_BI, ONE_BI } from "./constants";
 import {
   getExchangeTokenId,
   getCollectionTokenId,
 } from './getters'
+import { divRound } from './math'
 
 export const addNewListedCollectionToken = (tokenId: BigInt, niftyswapExchange: NiftyswapExchange, collection: Collection): void => {
   let tokenExchangeId = getExchangeTokenId(tokenId, niftyswapExchange.collection, niftyswapExchange.id)
@@ -59,4 +60,26 @@ export const createNewExchangeToken = (tokenId: BigInt, niftyswapExchange: Nifty
   token.liquiditySnapshots = []
   token.liquidities = ZERO_BI
   return token
+}
+
+export const updateCurrencyReservesOnAddLiquidity = (token: Token, niftyswapExchange: NiftyswapExchange, currencyAmount: BigInt, tokenAmount: BigInt): void => {
+  log.debug("Liquidity already present: {}", [token.id]);
+  let currencyReserve = token.currencyReserve;
+  let currentTokenReserve = token.tokenAmount;
+
+  if (currentTokenReserve.equals(ZERO_BI)) {
+    token.currencyReserve = currencyAmount;
+    niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
+      currencyAmount
+    );
+    niftyswapExchange.nListedTokenIds = niftyswapExchange.nListedTokenIds.plus(ONE_BI)
+  } else {
+    let tokensToAdd = tokenAmount;
+    let numerator = tokensToAdd.times(currencyReserve);
+    let currencyAmount = divRound(numerator, currentTokenReserve);
+    token.currencyReserve = token.currencyReserve.plus(currencyAmount);
+    niftyswapExchange.totalCurrencyReserve = niftyswapExchange.totalCurrencyReserve.plus(
+      currencyAmount
+    );
+  }
 }
