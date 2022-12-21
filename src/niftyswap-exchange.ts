@@ -1,13 +1,20 @@
 import {
-  NiftyswapExchange,
   Token,
-  Currency,
-  Collection,
   CollectionToken,
 } from "./../generated/schema";
-import { BigInt, log, BigDecimal, ethereum } from "@graphprotocol/graph-ts";
-import { ONE_BI, ZERO_BI, ZERO_BD, ONE_BD } from "./utils/constants";
+import { BigInt, log } from "@graphprotocol/graph-ts";
+import { ONE_BI, ZERO_BI, ZERO_BD } from "./utils/constants";
 import { createTokenLiquiditySnapshot, createUserLiquiditySnapshot } from "./utils/liquidity"
+import {
+  getExchangeTokenId,
+  getCollectionTokenId,
+  getCollectionWithError,
+  getNiftyswapExchangeWithError,
+  getExchangeTokenWithError,
+} from './utils/getters'
+import {
+  divRound
+} from './utils/math'
 
 import {
   LiquidityAdded,
@@ -18,55 +25,30 @@ import {
 } from "./../generated/NiftyswapFactory/NiftyswapExchange";
 
 export function handleLiquidityAdded(event: LiquidityAdded): void {
-  let niftyswapExchange = NiftyswapExchange.load(
-    event.address.toHexString()
-  ) as NiftyswapExchange;
-  if (niftyswapExchange == null) {
-    log.error("Exchange not found: {}", [event.address.toHexString()]);
-    return;
-  }
-
-  let currency = Currency.load(niftyswapExchange.currency) as Currency;
-  if (currency == null) {
-    log.error("Currency not found: {}", [niftyswapExchange.currency]);
-    return;
-  }
-
-  let collection = Collection.load(niftyswapExchange.collection) as Collection;
-  if (collection == null) {
-    log.error("Collection not found: {}", [niftyswapExchange.collection]);
-    return;
-  }
+  let niftyswapExchange = getNiftyswapExchangeWithError(event.address.toHexString())
+  let collection = getCollectionWithError(niftyswapExchange.collection)
 
   let tokenIds = event.params.tokenIds;
   // TokenId = tokenNumber + "-" + CollectionId + "-" + ExchangeId
   for (let i = 0; i < tokenIds.length; i++) {
-    let tokenConId = tokenIds[i]
-      .toString()
-      .concat("-")
-      .concat(niftyswapExchange.collection)
-      .concat("-")
-      .concat(niftyswapExchange.id);
-
-    collection.tokenIds.push(tokenConId);
+    let tokenExchangeId = getExchangeTokenId(tokenIds[i], niftyswapExchange.collection, niftyswapExchange.id)
+    
+    collection.tokenIds.push(tokenExchangeId);
     collection.nTokenIds = collection.nTokenIds.plus(ONE_BI);
 
     // collectionTokenId = tokenNumber + "-" + CollectionId
-    let collectionTokenId = tokenIds[i]
-      .toString()
-      .concat("-")
-      .concat(niftyswapExchange.collection)
+    let collectionTokenId = getCollectionTokenId(tokenIds[i], niftyswapExchange.collection)
 
     let collectionToken = CollectionToken.load(collectionTokenId)
 
     if (collectionToken == null) {
       collectionToken = new CollectionToken(collectionTokenId)
-      collectionToken.tokenIds = [tokenConId]
+      collectionToken.tokenIds = [tokenExchangeId]
       collection.nListedTokenIds = collection.nListedTokenIds.plus(ONE_BI);
     } else {
       let tokenIdNotFound = true
       for (let j = 0; j < collectionToken.tokenIds.length; j++) {
-        if (collectionToken.tokenIds[j] === tokenConId) {
+        if (collectionToken.tokenIds[j] === tokenExchangeId) {
           tokenIdNotFound = false
         }
       }
@@ -75,16 +57,16 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
           collection.nListedTokenIds = collection.nListedTokenIds.plus(ONE_BI);
         }
         const collectionTokenTokenIds = collectionToken.tokenIds 
-        collectionTokenTokenIds.push(tokenConId)
+        collectionTokenTokenIds.push(tokenExchangeId)
         collectionToken.tokenIds = collectionTokenTokenIds
       }
     }
     collectionToken.save()
 
     // Loading Token or creating if not exist
-    let token = Token.load(tokenConId);
+    let token = Token.load(tokenExchangeId);
     if (token == null) {
-      token = new Token(tokenConId);
+      token = new Token(tokenExchangeId);
       token.tokenId = tokenIds[i]
       token.tokenAddress = niftyswapExchange.collection
       token.exchangeAddress = niftyswapExchange.id
@@ -152,40 +134,13 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
 }
 
 export function handleLiquidityRemoved(event: LiquidityRemoved): void {
-  let niftyswapExchange = NiftyswapExchange.load(
-    event.address.toHexString()
-  ) as NiftyswapExchange;
-  if (niftyswapExchange == null) {
-    log.error("Exchange not found: {}", [event.address.toHexString()]);
-    return;
-  }
-
-  let currency = Currency.load(niftyswapExchange.currency) as Currency;
-  if (currency == null) {
-    log.error("Currency not found: {}", [niftyswapExchange.currency]);
-    return;
-  }
-
-  let collection = Collection.load(niftyswapExchange.collection) as Collection;
-  if (collection == null) {
-    log.error("Collection not found: {}", [niftyswapExchange.collection]);
-    return;
-  }
-
+  let niftyswapExchange = getNiftyswapExchangeWithError(event.address.toHexString())
+  let collection = getCollectionWithError(niftyswapExchange.collection)
   let tokenIds = event.params.tokenIds;
-  for (let i = 0; i < tokenIds.length; i++) {
-    let tokenConId = tokenIds[i]
-      .toString()
-      .concat("-")
-      .concat(niftyswapExchange.collection)
-      .concat("-")
-      .concat(niftyswapExchange.id);
 
-    let token = Token.load(tokenConId);
-    if (token == null) {
-      log.error("Token not found: {}", [tokenConId]);
-      return;
-    }
+  for (let i = 0; i < tokenIds.length; i++) {
+    let tokenExchangeId = getExchangeTokenId(tokenIds[i], niftyswapExchange.collection, niftyswapExchange.id)
+    let token = getExchangeTokenWithError(tokenExchangeId)
 
     token.tokenAmount = token.tokenAmount.minus(event.params.tokenAmounts[i]);
     token.currencyReserve = token.currencyReserve.minus(
@@ -208,10 +163,7 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
       // Remove tokenId from list of collection tokenIds
       // Decrement the nListedTokenIds field if necessary
       // collectionTokenId = tokenNumber + "-" + CollectionId
-      let collectionTokenId = tokenIds[i]
-        .toString()
-        .concat("-")
-        .concat(niftyswapExchange.collection)
+      let collectionTokenId = getCollectionTokenId(tokenIds[i], niftyswapExchange.collection)
 
       let collectionToken = CollectionToken.load(collectionTokenId)
 
@@ -222,7 +174,7 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
         const newTokenIds: string[] = []
         for (let j = 0; j < collectionToken.tokenIds.length; j++) {
           const tokenId = collectionToken.tokenIds[j]
-          if (tokenId !== tokenConId) {
+          if (tokenId !== tokenExchangeId) {
             newTokenIds.push(collectionToken.tokenIds[j])
           }
         }
@@ -234,8 +186,6 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
         collectionToken.save()
       }
     }
-    // token.spotPrice = token.spotPrice.truncate(0);
-
 
     const niftyswapExchangeContract = NiftyswapExchangeContract.bind(event.address)
     const totalBalance = niftyswapExchangeContract.getTotalSupply([token.tokenId])[0]
@@ -244,7 +194,6 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
     token.save();
 
     createTokenLiquiditySnapshot(event, token.id)
-
     createUserLiquiditySnapshot(event, token.id, event.params.provider)
   }
 
@@ -256,42 +205,16 @@ export function handleLiquidityRemoved(event: LiquidityRemoved): void {
 }
 
 export function handleTokenPurchase(event: TokensPurchase): void {
-  let niftyswapExchange = NiftyswapExchange.load(
-    event.address.toHexString()
-  ) as NiftyswapExchange;
-  if (niftyswapExchange == null) {
-    log.error("Exchange not found: {}", [event.address.toHexString()]);
-    return;
-  }
-
-  let currency = Currency.load(niftyswapExchange.currency) as Currency;
-  if (currency == null) {
-    log.error("Currency not found: {}", [niftyswapExchange.currency]);
-    return;
-  }
-
-  let collection = Collection.load(niftyswapExchange.collection) as Collection;
-  if (collection == null) {
-    log.error("Collection not found: {}", [niftyswapExchange.collection]);
-    return;
-  }
+  let niftyswapExchange = getNiftyswapExchangeWithError(event.address.toHexString())
+  let collection = getCollectionWithError(niftyswapExchange.collection)
 
   let tokenIds = event.params.tokensBoughtIds;
   for (let i = 0; i < tokenIds.length; i++) {
     log.debug("TokenPurchase: {}", [
       event.params.tokensBoughtAmounts[i].toString(),
     ]);
-    let tokenConId = tokenIds[i]
-      .toString()
-      .concat("-")
-      .concat(niftyswapExchange.collection)
-      .concat("-")
-      .concat(niftyswapExchange.id);
-    let token = Token.load(tokenConId);
-    if (token == null) {
-      log.error("Token not found: {}", [tokenConId]);
-      return;
-    }
+    let tokenExchangeId = getExchangeTokenId(tokenIds[i], niftyswapExchange.collection, niftyswapExchange.id)
+    let token = getExchangeTokenWithError(tokenExchangeId)
 
     token.tokenAmount = token.tokenAmount.minus(
       event.params.tokensBoughtAmounts[i]
@@ -347,7 +270,7 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     createTokenLiquiditySnapshot(event, token.id)
 
     // updating the latest traded item
-    collection.latestTradedToken = tokenConId
+    collection.latestTradedToken = tokenExchangeId
     collection.latestTradedTimestamp = event.block.timestamp
     
     collection.save()
@@ -361,42 +284,15 @@ export function handleTokenPurchase(event: TokensPurchase): void {
 }
 
 export function handleCurrencyPurchase(event: CurrencyPurchase): void {
-  let niftyswapExchange = NiftyswapExchange.load(
-    event.address.toHexString()
-  ) as NiftyswapExchange;
-  if (niftyswapExchange == null) {
-    log.error("Exchange not found: {}", [event.address.toHexString()]);
-    return;
-  }
-
-  let currency = Currency.load(niftyswapExchange.currency) as Currency;
-  if (currency == null) {
-    log.error("Currency not found: {}", [niftyswapExchange.currency]);
-    return;
-  }
-
-  let collection = Collection.load(niftyswapExchange.collection) as Collection;
-  if (collection == null) {
-    log.error("Collection not found: {}", [niftyswapExchange.collection]);
-    return;
-  }
+  let niftyswapExchange = getNiftyswapExchangeWithError(event.address.toHexString())
 
   let tokenIds = event.params.tokensSoldIds;
   for (let i = 0; i < tokenIds.length; i++) {
     log.debug("CurrencyPurchase: {}", [
       event.params.tokensSoldAmounts[i].toString(),
     ]);
-    let tokenConId = tokenIds[i]
-      .toString()
-      .concat("-")
-      .concat(niftyswapExchange.collection)
-      .concat("-")
-      .concat(niftyswapExchange.id);
-    let token = Token.load(tokenConId);
-    if (token == null) {
-      log.error("Token not found: {}", [tokenConId]);
-      return;
-    }
+    let tokenExchangeId = getExchangeTokenId(tokenIds[i], niftyswapExchange.collection, niftyswapExchange.id)
+    let token = getExchangeTokenWithError(tokenExchangeId)
 
     // Get Sell Price Calculation
     let fee_multiplier = BigInt.fromI32(1000).minus(niftyswapExchange.lpFee);
@@ -443,38 +339,4 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
   );
   niftyswapExchange.txCount = niftyswapExchange.txCount.plus(BigInt.fromI32(1));
   niftyswapExchange.save();
-}
-
-export function bigDecimalExponated(
-  value: BigDecimal,
-  power: BigInt
-): BigDecimal {
-  if (power.equals(ZERO_BI)) {
-    return ONE_BD;
-  }
-  let negativePower = power.lt(ZERO_BI);
-  let result = ZERO_BD.plus(value);
-  let powerAbs = power.abs();
-  for (let i = ONE_BI; i.lt(powerAbs); i = i.plus(ONE_BI)) {
-    result = result.times(value);
-  }
-
-  if (negativePower) {
-    result = safeDiv(ONE_BD, result);
-  }
-
-  return result;
-}
-
-// return 0 if denominator is 0 in division
-export function safeDiv(amount0: BigDecimal, amount1: BigDecimal): BigDecimal {
-  if (amount1.equals(ZERO_BD)) {
-    return ZERO_BD;
-  } else {
-    return amount0.div(amount1);
-  }
-}
-
-function divRound(a: BigInt, b: BigInt): BigInt {
-  return a.mod(b).equals(ZERO_BI) ? a.div(b) : a.div(b).plus(ONE_BI);
 }

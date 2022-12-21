@@ -4,7 +4,7 @@ import {
   Address
 } from "@graphprotocol/graph-ts";
 
-import { getUser } from './user'
+import { getUser } from './getters'
 
 import {
   TokenLiquiditySnapshot,
