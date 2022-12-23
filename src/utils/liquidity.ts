@@ -23,8 +23,14 @@ export function createTokenLiquiditySnapshot(event: ethereum.Event, tokenId: str
   if (!token) {
     return
   }
-  const snapshotId = token.id.concat("-").concat(event.block.timestamp.toString()).concat('-').concat(token.liquiditySnapshots.length.toString())
-  const snapshot = new TokenLiquiditySnapshot(snapshotId)
+  const snapshotId = token.id.concat("-").concat(event.block.timestamp.toString())
+  let snapshot = TokenLiquiditySnapshot.load(snapshotId)
+  let addSnapshotToArray = false
+  if (!snapshot) {
+    snapshot = new TokenLiquiditySnapshot(snapshotId)
+    addSnapshotToArray = true
+  }
+
   snapshot.totalValueLocked = token.totalValueLocked
   snapshot.volume = token.volume
   snapshot.token = token.id
@@ -36,9 +42,11 @@ export function createTokenLiquiditySnapshot(event: ethereum.Event, tokenId: str
 
   snapshot.save()
 
-  const liquiditySnapshots = token.liquiditySnapshots
-  liquiditySnapshots.push(snapshot.id)
-  token.liquiditySnapshots = liquiditySnapshots
+  if (addSnapshotToArray) {
+    const liquiditySnapshots = token.liquiditySnapshots
+    liquiditySnapshots.push(snapshot.id)
+    token.liquiditySnapshots = liquiditySnapshots
+  }
   token.save()
 }
 
@@ -48,8 +56,13 @@ export function createUserLiquiditySnapshot(event: ethereum.Event, tokenId: stri
     return
   }
   const user = getUser(userAddress, token)
-  const snapshotId = user.id.concat("-").concat(event.block.timestamp.toString()).concat('-').concat(user.liquiditySnapshots.length.toString())
-  const snapshot = new UserLiquiditySnapshot(snapshotId)
+  const snapshotId = user.id.concat("-").concat(event.block.timestamp.toString())
+  let snapshot = UserLiquiditySnapshot.load(snapshotId)
+  let addSnapshotToArray = false
+  if (!snapshot) {
+    snapshot = new UserLiquiditySnapshot(snapshotId)
+    addSnapshotToArray = true
+  }
   snapshot.user = user.id
   snapshot.timestamp = event.block.timestamp
 
@@ -59,9 +72,11 @@ export function createUserLiquiditySnapshot(event: ethereum.Event, tokenId: stri
 
   snapshot.save()
 
-  const liquiditySnapshots = user.liquiditySnapshots
-  liquiditySnapshots.push(snapshot.id)
-  user.liquiditySnapshots = liquiditySnapshots
+  if (addSnapshotToArray) {
+    const liquiditySnapshots = user.liquiditySnapshots
+    liquiditySnapshots.push(snapshot.id)
+    user.liquiditySnapshots = liquiditySnapshots
+  }
   
   user.liquidities = balance
   user.save()
