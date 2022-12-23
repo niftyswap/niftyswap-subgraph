@@ -23,7 +23,7 @@ export function createTokenLiquiditySnapshot(event: ethereum.Event, tokenId: str
   if (!token) {
     return
   }
-  const snapshotId = token.id.concat("-").concat(event.block.timestamp.toString())
+  const snapshotId = token.id.concat("-").concat(event.block.timestamp.toString()).concat('-').concat(token.liquiditySnapshots.length.toString())
   const snapshot = new TokenLiquiditySnapshot(snapshotId)
   snapshot.totalValueLocked = token.totalValueLocked
   snapshot.volume = token.volume
@@ -48,7 +48,7 @@ export function createUserLiquiditySnapshot(event: ethereum.Event, tokenId: stri
     return
   }
   const user = getUser(userAddress, token)
-  const snapshotId = user.id.concat("-").concat(event.block.timestamp.toString())
+  const snapshotId = user.id.concat("-").concat(event.block.timestamp.toString()).concat('-').concat(user.liquiditySnapshots.length.toString())
   const snapshot = new UserLiquiditySnapshot(snapshotId)
   snapshot.user = user.id
   snapshot.timestamp = event.block.timestamp
