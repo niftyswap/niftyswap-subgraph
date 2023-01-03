@@ -436,6 +436,15 @@ export class Token extends Entity {
   set liquidities(value: BigInt) {
     this.set("liquidities", Value.fromBigInt(value));
   }
+
+  get snapshotQuantity(): BigInt {
+    let value = this.get("snapshotQuantity");
+    return value!.toBigInt();
+  }
+
+  set snapshotQuantity(value: BigInt) {
+    this.set("snapshotQuantity", Value.fromBigInt(value));
+  }
 }
 
 export class CollectionToken extends Entity {
@@ -650,6 +659,15 @@ export class User extends Entity {
 
   set liquidities(value: BigInt) {
     this.set("liquidities", Value.fromBigInt(value));
+  }
+
+  get snapshotQuantity(): BigInt {
+    let value = this.get("snapshotQuantity");
+    return value!.toBigInt();
+  }
+
+  set snapshotQuantity(value: BigInt) {
+    this.set("snapshotQuantity", Value.fromBigInt(value));
   }
 }
 

@@ -6,6 +6,8 @@ import {
 
 import { getUser } from './getters'
 
+import { ONE_BI, ZERO_BI, ZERO_BD } from "../utils/constants";
+
 import {
   TokenLiquiditySnapshot,
   UserLiquiditySnapshot,
@@ -37,8 +39,10 @@ export function createTokenLiquiditySnapshot(event: ethereum.Event, tokenId: str
   const niftyswapExchange = NiftyswapExchangeContract.bind(event.address)
   const totalBalance = niftyswapExchange.getTotalSupply([token.tokenId])[0]
   snapshot.liquidities = totalBalance
-
   snapshot.save()
+
+  token.snapshotQuantity = token.snapshotQuantity.plus(ONE_BI)
+  token.save()
 }
 
 export function createUserLiquiditySnapshot(event: ethereum.Event, tokenId: string, userAddress: Address): void {
@@ -62,5 +66,6 @@ export function createUserLiquiditySnapshot(event: ethereum.Event, tokenId: stri
   snapshot.save()
 
   user.liquidities = balance
+  user.snapshotQuantity = user.snapshotQuantity.plus(ONE_BI)
   user.save()
 }

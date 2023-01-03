@@ -71,6 +71,8 @@ type Token @entity{
   nTokensBought: BigInt!
   # total liquidity token suply
   liquidities: BigInt!
+  # total amount of liquidity snapshots
+  snapshotQuantity: BigInt!
 }
 
 # Unique tokens regardless of exchange
@@ -114,6 +116,8 @@ type User @entity {
   id: ID!
   # liquidity tokens owned by the user
   liquidities: BigInt!
+  # total amount of liquidity snapshots
+  snapshotQuantity: BigInt!
 }
 
 type TokenLiquiditySnapshot @entity {
