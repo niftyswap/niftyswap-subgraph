@@ -35,6 +35,7 @@ export function getUser (userAddress: Address, token: Token): User {
   if (!user) {
     user = new User(userId)
     user.liquidities = ZERO_BI
+    user.snapshotQuantity = ZERO_BI
     user.save()
   }
 
