@@ -428,15 +428,6 @@ export class Token extends Entity {
     this.set("nTokensBought", Value.fromBigInt(value));
   }
 
-  get liquiditySnapshots(): Array<string> {
-    let value = this.get("liquiditySnapshots");
-    return value!.toStringArray();
-  }
-
-  set liquiditySnapshots(value: Array<string>) {
-    this.set("liquiditySnapshots", Value.fromStringArray(value));
-  }
-
   get liquidities(): BigInt {
     let value = this.get("liquidities");
     return value!.toBigInt();
@@ -650,15 +641,6 @@ export class User extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
-  }
-
-  get liquiditySnapshots(): Array<string> {
-    let value = this.get("liquiditySnapshots");
-    return value!.toStringArray();
-  }
-
-  set liquiditySnapshots(value: Array<string>) {
-    this.set("liquiditySnapshots", Value.fromStringArray(value));
   }
 
   get liquidities(): BigInt {

@@ -34,7 +34,6 @@ export function getUser (userAddress: Address, token: Token): User {
   let user = User.load(userId)
   if (!user) {
     user = new User(userId)
-    user.liquiditySnapshots = []
     user.liquidities = ZERO_BI
     user.save()
   }

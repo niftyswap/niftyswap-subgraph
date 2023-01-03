@@ -57,7 +57,6 @@ export const createNewExchangeToken = (tokenId: BigInt, niftyswapExchange: Nifty
   token.nSwaps = ZERO_BI;
   token.nTokensBought = ZERO_BI;
   token.nTokensSold = ZERO_BI;
-  token.liquiditySnapshots = []
   token.liquidities = ZERO_BI
   return token
 }
