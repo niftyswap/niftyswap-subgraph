@@ -25,10 +25,8 @@ export function createTokenLiquiditySnapshot(event: ethereum.Event, tokenId: str
   }
   const snapshotId = token.id.concat("-").concat(event.block.timestamp.toString())
   let snapshot = TokenLiquiditySnapshot.load(snapshotId)
-  let addSnapshotToArray = false
   if (!snapshot) {
     snapshot = new TokenLiquiditySnapshot(snapshotId)
-    addSnapshotToArray = true
   }
 
   snapshot.totalValueLocked = token.totalValueLocked
@@ -41,13 +39,6 @@ export function createTokenLiquiditySnapshot(event: ethereum.Event, tokenId: str
   snapshot.liquidities = totalBalance
 
   snapshot.save()
-
-  if (addSnapshotToArray) {
-    const liquiditySnapshots = token.liquiditySnapshots
-    liquiditySnapshots.push(snapshot.id)
-    token.liquiditySnapshots = liquiditySnapshots
-  }
-  token.save()
 }
 
 export function createUserLiquiditySnapshot(event: ethereum.Event, tokenId: string, userAddress: Address): void {
@@ -58,10 +49,8 @@ export function createUserLiquiditySnapshot(event: ethereum.Event, tokenId: stri
   const user = getUser(userAddress, token)
   const snapshotId = user.id.concat("-").concat(event.block.timestamp.toString())
   let snapshot = UserLiquiditySnapshot.load(snapshotId)
-  let addSnapshotToArray = false
   if (!snapshot) {
     snapshot = new UserLiquiditySnapshot(snapshotId)
-    addSnapshotToArray = true
   }
   snapshot.user = user.id
   snapshot.timestamp = event.block.timestamp
@@ -72,12 +61,6 @@ export function createUserLiquiditySnapshot(event: ethereum.Event, tokenId: stri
 
   snapshot.save()
 
-  if (addSnapshotToArray) {
-    const liquiditySnapshots = user.liquiditySnapshots
-    liquiditySnapshots.push(snapshot.id)
-    user.liquiditySnapshots = liquiditySnapshots
-  }
-  
   user.liquidities = balance
   user.save()
 }

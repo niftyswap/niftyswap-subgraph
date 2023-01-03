@@ -69,10 +69,6 @@ type Token @entity{
   nTokensSold: BigInt!
   # number of tokens bought
   nTokensBought: BigInt!
-  # liquidity snapshots
-  # TODO: find out why derived field is not working
-  # liquiditySnapshots: [TokenLiquiditySnapshot!]! @derivedFrom(field: "token")
-  liquiditySnapshots: [TokenLiquiditySnapshot!]!
   # total liquidity token suply
   liquidities: BigInt!
 }
@@ -116,10 +112,6 @@ type User @entity {
   # user id for the token.
   # userAddress + "-" + tokenId + "-" + tokenAddress + "-" + ExchangeAddress
   id: ID!
-  # list of liquidity snapshots of the user
-  # TODO: find out why derived field is not working
-  # liquiditySnapshots: [UserLiquiditySnapshot!]! @derivedFrom(field: "user")
-  liquiditySnapshots: [UserLiquiditySnapshot!]!
   # liquidity tokens owned by the user
   liquidities: BigInt!
 }
