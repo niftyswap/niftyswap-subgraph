@@ -4,6 +4,9 @@ import {
   Collection,
   NiftyswapExchange
 } from "../../generated/schema";
+import {
+  LiquidityAdded,
+} from "../../generated/NiftyswapFactory/NiftyswapExchange";
 import { BigInt, log } from "@graphprotocol/graph-ts";
 import { ZERO_BI, ONE_BI } from "./constants";
 import {
@@ -41,7 +44,7 @@ export const addNewListedCollectionToken = (tokenId: BigInt, niftyswapExchange: 
   collectionToken.save()
 }
 
-export const createNewExchangeToken = (tokenId: BigInt, niftyswapExchange: NiftyswapExchange, tokenAmount: BigInt, currencyAmount: BigInt): Token => {
+export const createNewExchangeToken = (tokenId: BigInt, niftyswapExchange: NiftyswapExchange, tokenAmount: BigInt, currencyAmount: BigInt, event: LiquidityAdded): Token => {
   const tokenExchangeId = getExchangeTokenId(tokenId, niftyswapExchange.collection, niftyswapExchange.id)
   const token = new Token(tokenExchangeId);
   token.tokenId = tokenId
@@ -59,6 +62,8 @@ export const createNewExchangeToken = (tokenId: BigInt, niftyswapExchange: Nifty
   token.nTokensSold = ZERO_BI;
   token.liquidities = ZERO_BI;
   token.snapshotQuantity = ZERO_BI;
+  token.createdAtTimestamp = event.block.timestamp;
+  token.createdAtBlockNumber = event.block.number;
   return token
 }
 

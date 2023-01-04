@@ -47,6 +47,10 @@ type Collection @entity {
 type Token @entity{
   # tokenId + "-" + tokenAddress + "-" + ExchangeAddress
   id: ID!
+  # creation
+  createdAtTimestamp: BigInt!
+  # block pool was created at
+  createdAtBlockNumber: BigInt!
   # tokenId
   tokenId: BigInt!
   # token address

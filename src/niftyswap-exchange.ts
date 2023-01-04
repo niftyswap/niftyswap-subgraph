@@ -49,7 +49,7 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
     // Loading Token or creating if not exist
     let token = Token.load(tokenExchangeId);
     if (token == null) {
-      token = createNewExchangeToken(tokenIds[i], niftyswapExchange, event.params.tokenAmounts[i], event.params.currencyAmounts[i])
+      token = createNewExchangeToken(tokenIds[i], niftyswapExchange, event.params.tokenAmounts[i], event.params.currencyAmounts[i], event)
     } else {
       updateCurrencyReservesOnAddLiquidity(token, niftyswapExchange, event.params.currencyAmounts[i], event.params.tokenAmounts[i])
       token.tokenAmount = token.tokenAmount.plus(event.params.tokenAmounts[i]);
