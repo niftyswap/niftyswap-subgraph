@@ -313,6 +313,24 @@ export class Token extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get createdAtTimestamp(): BigInt {
+    let value = this.get("createdAtTimestamp");
+    return value!.toBigInt();
+  }
+
+  set createdAtTimestamp(value: BigInt) {
+    this.set("createdAtTimestamp", Value.fromBigInt(value));
+  }
+
+  get createdAtBlockNumber(): BigInt {
+    let value = this.get("createdAtBlockNumber");
+    return value!.toBigInt();
+  }
+
+  set createdAtBlockNumber(value: BigInt) {
+    this.set("createdAtBlockNumber", Value.fromBigInt(value));
+  }
+
   get tokenId(): BigInt {
     let value = this.get("tokenId");
     return value!.toBigInt();
@@ -426,6 +444,24 @@ export class Token extends Entity {
 
   set nTokensBought(value: BigInt) {
     this.set("nTokensBought", Value.fromBigInt(value));
+  }
+
+  get liquidities(): BigInt {
+    let value = this.get("liquidities");
+    return value!.toBigInt();
+  }
+
+  set liquidities(value: BigInt) {
+    this.set("liquidities", Value.fromBigInt(value));
+  }
+
+  get snapshotQuantity(): BigInt {
+    let value = this.get("snapshotQuantity");
+    return value!.toBigInt();
+  }
+
+  set snapshotQuantity(value: BigInt) {
+    this.set("snapshotQuantity", Value.fromBigInt(value));
   }
 }
 
@@ -600,5 +636,201 @@ export class NiftyswapExchange extends Entity {
 
   set nListedTokenIds(value: BigInt) {
     this.set("nListedTokenIds", Value.fromBigInt(value));
+  }
+}
+
+export class User extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save User entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type User must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("User", id.toString(), this);
+    }
+  }
+
+  static load(id: string): User | null {
+    return changetype<User | null>(store.get("User", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get liquidities(): BigInt {
+    let value = this.get("liquidities");
+    return value!.toBigInt();
+  }
+
+  set liquidities(value: BigInt) {
+    this.set("liquidities", Value.fromBigInt(value));
+  }
+
+  get snapshotQuantity(): BigInt {
+    let value = this.get("snapshotQuantity");
+    return value!.toBigInt();
+  }
+
+  set snapshotQuantity(value: BigInt) {
+    this.set("snapshotQuantity", Value.fromBigInt(value));
+  }
+}
+
+export class TokenLiquiditySnapshot extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save TokenLiquiditySnapshot entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TokenLiquiditySnapshot must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("TokenLiquiditySnapshot", id.toString(), this);
+    }
+  }
+
+  static load(id: string): TokenLiquiditySnapshot | null {
+    return changetype<TokenLiquiditySnapshot | null>(
+      store.get("TokenLiquiditySnapshot", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
+    return value!.toBigInt();
+  }
+
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
+  }
+
+  get totalValueLocked(): BigInt {
+    let value = this.get("totalValueLocked");
+    return value!.toBigInt();
+  }
+
+  set totalValueLocked(value: BigInt) {
+    this.set("totalValueLocked", Value.fromBigInt(value));
+  }
+
+  get volume(): BigInt {
+    let value = this.get("volume");
+    return value!.toBigInt();
+  }
+
+  set volume(value: BigInt) {
+    this.set("volume", Value.fromBigInt(value));
+  }
+
+  get liquidities(): BigInt {
+    let value = this.get("liquidities");
+    return value!.toBigInt();
+  }
+
+  set liquidities(value: BigInt) {
+    this.set("liquidities", Value.fromBigInt(value));
+  }
+
+  get token(): string {
+    let value = this.get("token");
+    return value!.toString();
+  }
+
+  set token(value: string) {
+    this.set("token", Value.fromString(value));
+  }
+}
+
+export class UserLiquiditySnapshot extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save UserLiquiditySnapshot entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type UserLiquiditySnapshot must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("UserLiquiditySnapshot", id.toString(), this);
+    }
+  }
+
+  static load(id: string): UserLiquiditySnapshot | null {
+    return changetype<UserLiquiditySnapshot | null>(
+      store.get("UserLiquiditySnapshot", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
+    return value!.toBigInt();
+  }
+
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
+  }
+
+  get liquidities(): BigInt {
+    let value = this.get("liquidities");
+    return value!.toBigInt();
+  }
+
+  set liquidities(value: BigInt) {
+    this.set("liquidities", Value.fromBigInt(value));
+  }
+
+  get user(): string {
+    let value = this.get("user");
+    return value!.toString();
+  }
+
+  set user(value: string) {
+    this.set("user", Value.fromString(value));
   }
 }
