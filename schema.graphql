@@ -41,6 +41,8 @@ type Collection @entity {
   latestTradedToken: ID
   # latest traded token timestamp
   latestTradedTimestamp: BigInt!
+  # latest traded token price bought
+  latestTradedPrice: BigDecimal!
 }
 
 # Specific to an exchange
@@ -77,10 +79,6 @@ type Token @entity{
   liquidities: BigInt!
   # total amount of liquidity snapshots
   snapshotQuantity: BigInt!
-  # latest traded token id
-  latestTradedToken: ID
-  # latest traded token timestamp
-  latestTradedTimestamp: BigInt!
 }
 
 # Unique tokens regardless of exchange
@@ -116,6 +114,12 @@ type NiftyswapExchange @entity {
   nSwaps: BigInt!
   # amount of tokenIds listen on the exchange
   nListedTokenIds: BigInt!
+  # latest traded token id
+  latestTradedToken: ID
+  # latest traded token timestamp
+  latestTradedTimestamp: BigInt!
+  # latest traded token price bought
+  latestTradedPrice: BigDecimal!
 }
 
 type User @entity {
