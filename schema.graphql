@@ -42,7 +42,7 @@ type Collection @entity {
   # latest traded token timestamp
   latestTradedTimestamp: BigInt!
   # latest traded token price bought
-  latestTradedPrice: BigDecimal!
+  latestTradedPrice: BigInt!
 }
 
 # Specific to an exchange
@@ -119,7 +119,7 @@ type NiftyswapExchange @entity {
   # latest traded token timestamp
   latestTradedTimestamp: BigInt!
   # latest traded token price bought
-  latestTradedPrice: BigDecimal!
+  latestTradedPrice: BigInt!
 }
 
 type User @entity {

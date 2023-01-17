@@ -281,13 +281,13 @@ export class Collection extends Entity {
     this.set("latestTradedTimestamp", Value.fromBigInt(value));
   }
 
-  get latestTradedPrice(): BigDecimal {
+  get latestTradedPrice(): BigInt {
     let value = this.get("latestTradedPrice");
-    return value!.toBigDecimal();
+    return value!.toBigInt();
   }
 
-  set latestTradedPrice(value: BigDecimal) {
-    this.set("latestTradedPrice", Value.fromBigDecimal(value));
+  set latestTradedPrice(value: BigInt) {
+    this.set("latestTradedPrice", Value.fromBigInt(value));
   }
 }
 
@@ -673,13 +673,13 @@ export class NiftyswapExchange extends Entity {
     this.set("latestTradedTimestamp", Value.fromBigInt(value));
   }
 
-  get latestTradedPrice(): BigDecimal {
+  get latestTradedPrice(): BigInt {
     let value = this.get("latestTradedPrice");
-    return value!.toBigDecimal();
+    return value!.toBigInt();
   }
 
-  set latestTradedPrice(value: BigDecimal) {
-    this.set("latestTradedPrice", Value.fromBigDecimal(value));
+  set latestTradedPrice(value: BigInt) {
+    this.set("latestTradedPrice", Value.fromBigInt(value));
   }
 }
 

@@ -201,9 +201,9 @@ export function handleTokenPurchase(event: TokensPurchase): void {
 
     // Price the use paid for the tokens.
     // The values includes royalty fees and the lp fee.
-    const currencySold = event.params.currencySoldAmounts[i].toBigDecimal()
-    const tokensBought = event.params.tokensBoughtAmounts[i].toBigDecimal()
-    const latestTokenPricePaid =  currencySold.div(tokensBought) 
+    const currencySold = event.params.currencySoldAmounts[i]
+    const tokensBought = event.params.tokensBoughtAmounts[i]
+    const latestTokenPricePaid = divRound(currencySold, tokensBought) 
 
     // updating the latest traded item in exchange
     niftyswapExchange.latestTradedToken = tokenExchangeId
