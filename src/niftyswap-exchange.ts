@@ -217,11 +217,15 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     const totalBalance = niftyswapExchangeContract.getTotalSupply([token.tokenId])[0]
     token.liquidities = totalBalance
 
+    // updating the latest traded item in exchange
+    token.latestTradedToken = tokenExchangeId
+    token.latestTradedTimestamp = event.block.timestamp
+
     token.save();
 
     createTokenLiquiditySnapshot(event, token.id)
 
-    // updating the latest traded item
+    // updating the latest traded item in collection
     collection.latestTradedToken = tokenExchangeId
     collection.latestTradedTimestamp = event.block.timestamp
     

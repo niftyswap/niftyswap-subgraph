@@ -77,6 +77,10 @@ type Token @entity{
   liquidities: BigInt!
   # total amount of liquidity snapshots
   snapshotQuantity: BigInt!
+  # latest traded token id
+  latestTradedToken: ID
+  # latest traded token timestamp
+  latestTradedTimestamp: BigInt!
 }
 
 # Unique tokens regardless of exchange
