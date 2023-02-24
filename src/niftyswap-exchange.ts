@@ -283,26 +283,27 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
     );
     niftyswapExchange.volume = niftyswapExchange.volume.plus(sellPrice);
     niftyswapExchange.nSwaps = niftyswapExchange.nSwaps.plus(ONE_BI);
+
+    const currencyBought = event.params.currencyBoughtAmounts[i]
+    const tokensSold = event.params.tokensSoldAmounts[i]
+    const latestTokenPricePaid = divRound(currencyBought, tokensSold);
+
+    // updating the latest traded item in exchange
+    niftyswapExchange.latestTradedToken = tokenExchangeId;
+    niftyswapExchange.latestTradedTimestamp = event.block.timestamp;
+    niftyswapExchange.latestTradedPrice = latestTokenPricePaid;
+    niftyswapExchange.latestTradedTransactionType = 'SELL';
+
+    // updating the latest traded item in collection
+    collection.latestTradedToken = tokenExchangeId;
+    collection.latestTradedTimestamp = event.block.timestamp;
+    collection.latestTradedPrice = latestTokenPricePaid;
+    niftyswapExchange.latestTradedTransactionType = 'SELL';
+
     // Spot price calculation
     if (token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI) {
       let currencyReserve = token.currencyReserve.toBigDecimal();
       let tokenAmount = token.tokenAmount.toBigDecimal();
-
-      const currencyBought = event.params.currencyBoughtAmounts[i]
-      const tokensSold = event.params.tokensSoldAmounts[i]
-      const latestTokenPricePaid = divRound(currencyBought, tokensSold);
-
-      // updating the latest traded item in exchange
-      niftyswapExchange.latestTradedToken = tokenExchangeId;
-      niftyswapExchange.latestTradedTimestamp = event.block.timestamp;
-      niftyswapExchange.latestTradedPrice = latestTokenPricePaid;
-      niftyswapExchange.latestTradedTransactionType = 'SELL';
-
-      // updating the latest traded item in collection
-      collection.latestTradedToken = tokenExchangeId;
-      collection.latestTradedTimestamp = event.block.timestamp;
-      collection.latestTradedPrice = latestTokenPricePaid;
-      niftyswapExchange.latestTradedTransactionType = 'SELL';
 
       token.spotPrice = currencyReserve.div(tokenAmount);
     } else {
