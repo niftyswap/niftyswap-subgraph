@@ -1,3 +1,10 @@
+enum TransactionType {
+  BUY
+  SELL
+  WITHDRAW
+  DEPOSIT
+}
+
 type Factory @entity {
   # factory address
   id: ID!
@@ -41,8 +48,10 @@ type Collection @entity {
   latestTradedToken: ID
   # latest traded token timestamp
   latestTradedTimestamp: BigInt!
-  # latest traded token price bought
+  # latest traded token price transacted
   latestTradedPrice: BigInt!
+  # latest traded token transaction type
+  latestTradedTransactionType: TransactionType!
 }
 
 # Specific to an exchange
@@ -120,6 +129,8 @@ type NiftyswapExchange @entity {
   latestTradedTimestamp: BigInt!
   # latest traded token price bought
   latestTradedPrice: BigInt!
+  # latest traded token transaction type
+  latestTradedTransactionType: TransactionType!
 }
 
 type User @entity {
