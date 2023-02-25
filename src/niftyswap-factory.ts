@@ -60,7 +60,8 @@ export function handleNewExchange(event: NewExchange): void {
     collection.nListedTokenIds = ZERO_BI;
     collection.nExchanges = ZERO_BI;
     collection.latestTradedTimestamp = ZERO_BI;
-    collection.latestTradedPrice = ZERO_BI
+    collection.latestTradedPrice = ZERO_BI;
+    collection.latestTradedTransactionType = 'BUY';
   }
   collection.nExchanges = collection.nExchanges.plus(ONE_BI);
   collection.save();
@@ -85,6 +86,7 @@ export function handleNewExchange(event: NewExchange): void {
   niftyswapExchange.nListedTokenIds = ZERO_BI;
   niftyswapExchange.latestTradedTimestamp = ZERO_BI
   niftyswapExchange.latestTradedPrice = ZERO_BI
+  niftyswapExchange.latestTradedTransactionType = 'BUY';
   niftyswapExchange.save();
   currency.save();
 

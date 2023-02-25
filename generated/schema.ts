@@ -289,6 +289,15 @@ export class Collection extends Entity {
   set latestTradedPrice(value: BigInt) {
     this.set("latestTradedPrice", Value.fromBigInt(value));
   }
+
+  get latestTradedTransactionType(): string {
+    let value = this.get("latestTradedTransactionType");
+    return value!.toString();
+  }
+
+  set latestTradedTransactionType(value: string) {
+    this.set("latestTradedTransactionType", Value.fromString(value));
+  }
 }
 
 export class Token extends Entity {
@@ -680,6 +689,15 @@ export class NiftyswapExchange extends Entity {
 
   set latestTradedPrice(value: BigInt) {
     this.set("latestTradedPrice", Value.fromBigInt(value));
+  }
+
+  get latestTradedTransactionType(): string {
+    let value = this.get("latestTradedTransactionType");
+    return value!.toString();
+  }
+
+  set latestTradedTransactionType(value: string) {
+    this.set("latestTradedTransactionType", Value.fromString(value));
   }
 }
 

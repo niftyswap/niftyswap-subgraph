@@ -201,19 +201,21 @@ export function handleTokenPurchase(event: TokensPurchase): void {
 
     // Price the use paid for the tokens.
     // The values includes royalty fees and the lp fee.
-    const currencySold = event.params.currencySoldAmounts[i]
-    const tokensBought = event.params.tokensBoughtAmounts[i]
-    const latestTokenPricePaid = divRound(currencySold, tokensBought) 
+    const currencySold = event.params.currencySoldAmounts[i];
+    const tokensBought = event.params.tokensBoughtAmounts[i];
+    const latestTokenPricePaid = divRound(currencySold, tokensBought);
 
     // updating the latest traded item in exchange
-    niftyswapExchange.latestTradedToken = tokenExchangeId
-    niftyswapExchange.latestTradedTimestamp = event.block.timestamp
-    niftyswapExchange.latestTradedPrice = latestTokenPricePaid
+    niftyswapExchange.latestTradedToken = tokenExchangeId;
+    niftyswapExchange.latestTradedTimestamp = event.block.timestamp;
+    niftyswapExchange.latestTradedPrice = latestTokenPricePaid;
+    niftyswapExchange.latestTradedTransactionType = 'BUY';
 
     // updating the latest traded item in collection
-    collection.latestTradedToken = tokenExchangeId
-    collection.latestTradedTimestamp = event.block.timestamp
-    collection.latestTradedPrice = latestTokenPricePaid
+    collection.latestTradedToken = tokenExchangeId;
+    collection.latestTradedTimestamp = event.block.timestamp;
+    collection.latestTradedPrice = latestTokenPricePaid;
+    niftyswapExchange.latestTradedTransactionType = 'BUY';
 
     // Spot price calculation
     if (token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI) {
@@ -249,6 +251,7 @@ export function handleTokenPurchase(event: TokensPurchase): void {
 
 export function handleCurrencyPurchase(event: CurrencyPurchase): void {
   let niftyswapExchange = getNiftyswapExchangeWithError(event.address.toHexString())
+  let collection = getCollectionWithError(niftyswapExchange.collection)
 
   let tokenIds = event.params.tokensSoldIds;
   for (let i = 0; i < tokenIds.length; i++) {
@@ -280,10 +283,28 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
     );
     niftyswapExchange.volume = niftyswapExchange.volume.plus(sellPrice);
     niftyswapExchange.nSwaps = niftyswapExchange.nSwaps.plus(ONE_BI);
+
+    const currencyBought = event.params.currencyBoughtAmounts[i]
+    const tokensSold = event.params.tokensSoldAmounts[i]
+    const latestTokenPricePaid = divRound(currencyBought, tokensSold);
+
+    // updating the latest traded item in exchange
+    niftyswapExchange.latestTradedToken = tokenExchangeId;
+    niftyswapExchange.latestTradedTimestamp = event.block.timestamp;
+    niftyswapExchange.latestTradedPrice = latestTokenPricePaid;
+    niftyswapExchange.latestTradedTransactionType = 'SELL';
+
+    // updating the latest traded item in collection
+    collection.latestTradedToken = tokenExchangeId;
+    collection.latestTradedTimestamp = event.block.timestamp;
+    collection.latestTradedPrice = latestTokenPricePaid;
+    niftyswapExchange.latestTradedTransactionType = 'SELL';
+
     // Spot price calculation
     if (token.currencyReserve > ZERO_BI && token.tokenAmount > ZERO_BI) {
       let currencyReserve = token.currencyReserve.toBigDecimal();
       let tokenAmount = token.tokenAmount.toBigDecimal();
+
       token.spotPrice = currencyReserve.div(tokenAmount);
     } else {
       token.spotPrice = ZERO_BD;
@@ -294,7 +315,6 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
     );
 
     token.save();
-
     createTokenLiquiditySnapshot(event, token.id)
   }
 
@@ -303,4 +323,5 @@ export function handleCurrencyPurchase(event: CurrencyPurchase): void {
   );
   niftyswapExchange.txCount = niftyswapExchange.txCount.plus(BigInt.fromI32(1));
   niftyswapExchange.save();
+  collection.save();
 }
