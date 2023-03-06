@@ -482,13 +482,13 @@ export class Token extends Entity {
     this.set("snapshotQuantity", Value.fromBigInt(value));
   }
 
-  get currency(): string {
-    let value = this.get("currency");
+  get niftyswapExchange(): string {
+    let value = this.get("niftyswapExchange");
     return value!.toString();
   }
 
-  set currency(value: string) {
-    this.set("currency", Value.fromString(value));
+  set niftyswapExchange(value: string) {
+    this.set("niftyswapExchange", Value.fromString(value));
   }
 
   get buyPrice(): BigInt | null {
