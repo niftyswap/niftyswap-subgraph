@@ -481,6 +481,49 @@ export class Token extends Entity {
   set snapshotQuantity(value: BigInt) {
     this.set("snapshotQuantity", Value.fromBigInt(value));
   }
+
+  get currency(): string {
+    let value = this.get("currency");
+    return value!.toString();
+  }
+
+  set currency(value: string) {
+    this.set("currency", Value.fromString(value));
+  }
+
+  get buyPrice(): BigInt | null {
+    let value = this.get("buyPrice");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set buyPrice(value: BigInt | null) {
+    if (!value) {
+      this.unset("buyPrice");
+    } else {
+      this.set("buyPrice", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get sellPrice(): BigInt | null {
+    let value = this.get("sellPrice");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set sellPrice(value: BigInt | null) {
+    if (!value) {
+      this.unset("sellPrice");
+    } else {
+      this.set("sellPrice", Value.fromBigInt(<BigInt>value));
+    }
+  }
 }
 
 export class CollectionToken extends Entity {

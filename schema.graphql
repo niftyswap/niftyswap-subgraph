@@ -88,6 +88,12 @@ type Token @entity{
   liquidities: BigInt!
   # total amount of liquidity snapshots
   snapshotQuantity: BigInt!
+  # currency used by pool
+  currency: Currency!
+  # buy price of the token
+  buyPrice: BigInt
+  # sell price of the token
+  sellPrice: BigInt
 }
 
 # Unique tokens regardless of exchange
