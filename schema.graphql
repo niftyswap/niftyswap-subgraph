@@ -90,10 +90,6 @@ type Token @entity{
   snapshotQuantity: BigInt!
   # currency used by pool
   niftyswapExchange: NiftyswapExchange!
-  # buy price of the token
-  buyPrice: BigInt
-  # sell price of the token
-  sellPrice: BigInt
 }
 
 # Unique tokens regardless of exchange

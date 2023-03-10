@@ -65,8 +65,6 @@ export const createNewExchangeToken = (tokenId: BigInt, niftyswapExchange: Nifty
   token.createdAtTimestamp = event.block.timestamp;
   token.createdAtBlockNumber = event.block.number;
   token.niftyswapExchange = niftyswapExchange.id
-  token.buyPrice = ZERO_BI
-  token.sellPrice = ZERO_BI
   return token
 }
 
