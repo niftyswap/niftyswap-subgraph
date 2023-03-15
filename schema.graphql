@@ -90,6 +90,9 @@ type Token @entity{
   snapshotQuantity: BigInt!
   # currency used by pool
   niftyswapExchange: NiftyswapExchange!
+  # currency (must be added since theGraph does not support
+  # sorting with nested fields)
+  currencyAddress: Currency!
 }
 
 # Unique tokens regardless of exchange

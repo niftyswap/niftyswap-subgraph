@@ -490,6 +490,15 @@ export class Token extends Entity {
   set niftyswapExchange(value: string) {
     this.set("niftyswapExchange", Value.fromString(value));
   }
+
+  get currencyAddress(): string {
+    let value = this.get("currencyAddress");
+    return value!.toString();
+  }
+
+  set currencyAddress(value: string) {
+    this.set("currencyAddress", Value.fromString(value));
+  }
 }
 
 export class CollectionToken extends Entity {
