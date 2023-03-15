@@ -92,7 +92,7 @@ type Token @entity{
   niftyswapExchange: NiftyswapExchange!
   # currency (must be added since theGraph does not support
   # sorting with nested fields)
-  currencyAddress: Currency!
+  currency: Currency!
 }
 
 # Unique tokens regardless of exchange
