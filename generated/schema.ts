@@ -491,13 +491,13 @@ export class Token extends Entity {
     this.set("niftyswapExchange", Value.fromString(value));
   }
 
-  get currencyAddress(): string {
-    let value = this.get("currencyAddress");
+  get currency(): string {
+    let value = this.get("currency");
     return value!.toString();
   }
 
-  set currencyAddress(value: string) {
-    this.set("currencyAddress", Value.fromString(value));
+  set currency(value: string) {
+    this.set("currency", Value.fromString(value));
   }
 }
 
