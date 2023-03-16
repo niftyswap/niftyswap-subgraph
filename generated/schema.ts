@@ -750,6 +750,24 @@ export class User extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get createdAtTimestamp(): BigInt {
+    let value = this.get("createdAtTimestamp");
+    return value!.toBigInt();
+  }
+
+  set createdAtTimestamp(value: BigInt) {
+    this.set("createdAtTimestamp", Value.fromBigInt(value));
+  }
+
+  get userId(): string {
+    let value = this.get("userId");
+    return value!.toString();
+  }
+
+  set userId(value: string) {
+    this.set("userId", Value.fromString(value));
+  }
+
   get liquidities(): BigInt {
     let value = this.get("liquidities");
     return value!.toBigInt();
