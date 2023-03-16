@@ -1,6 +1,7 @@
 import {
   Address,
   BigInt,
+  ethereum,
   log,
 } from "@graphprotocol/graph-ts";
 import {
@@ -29,11 +30,13 @@ export const getCollectionTokenId = (tokenId: BigInt, collectionId: string): str
   .concat(collectionId)
 }
 
-export function getUser (userAddress: Address, token: Token): User {
+export function getUser (userAddress: Address, token: Token, event: ethereum.Event): User {
   const userId = userAddress.toHexString().concat("-").concat(token.id)
   let user = User.load(userId)
   if (!user) {
     user = new User(userId)
+    user.userId = userAddress.toHexString()
+    user.createdAtTimestamp = event.block.timestamp
     user.liquidities = ZERO_BI
     user.snapshotQuantity = ZERO_BI
     user.save()

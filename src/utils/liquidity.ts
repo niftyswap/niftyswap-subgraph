@@ -50,7 +50,7 @@ export function createUserLiquiditySnapshot(event: ethereum.Event, tokenId: stri
   if (!token) {
     return
   }
-  const user = getUser(userAddress, token)
+  const user = getUser(userAddress, token, event)
   const snapshotId = user.id.concat("-").concat(event.block.timestamp.toString())
   let snapshot = UserLiquiditySnapshot.load(snapshotId)
   if (!snapshot) {
