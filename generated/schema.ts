@@ -785,6 +785,15 @@ export class User extends Entity {
   set snapshotQuantity(value: BigInt) {
     this.set("snapshotQuantity", Value.fromBigInt(value));
   }
+
+  get token(): string {
+    let value = this.get("token");
+    return value!.toString();
+  }
+
+  set token(value: string) {
+    this.set("token", Value.fromString(value));
+  }
 }
 
 export class TokenLiquiditySnapshot extends Entity {

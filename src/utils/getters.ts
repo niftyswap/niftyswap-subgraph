@@ -39,6 +39,7 @@ export function getUser (userAddress: Address, token: Token, event: ethereum.Eve
     user.createdAtTimestamp = event.block.timestamp
     user.liquidities = ZERO_BI
     user.snapshotQuantity = ZERO_BI
+    user.token = token.id
     user.save()
   }
 

@@ -150,6 +150,8 @@ type User @entity {
   liquidities: BigInt!
   # total amount of liquidity snapshots
   snapshotQuantity: BigInt!
+  # token
+  token: Token!
 }
 
 type TokenLiquiditySnapshot @entity {
