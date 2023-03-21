@@ -142,6 +142,10 @@ type User @entity {
   # user id for the token.
   # userAddress + "-" + tokenId + "-" + tokenAddress + "-" + ExchangeAddress
   id: ID!
+  # creation
+  createdAtTimestamp: BigInt!
+  # userAddress
+  userId: String!
   # liquidity tokens owned by the user
   liquidities: BigInt!
   # total amount of liquidity snapshots
