@@ -67,6 +67,10 @@ export function handleLiquidityAdded(event: LiquidityAdded): void {
     }
     // token.spotPrice = token.spotPrice.truncate(0);
 
+    const niftyswapExchangeContract = NiftyswapExchangeContract.bind(event.address)
+    const totalBalance = niftyswapExchangeContract.getTotalSupply([token.tokenId])[0]
+    token.liquidities = totalBalance
+
     token.save();
 
     createTokenLiquiditySnapshot(event, token.id)
@@ -230,10 +234,6 @@ export function handleTokenPurchase(event: TokensPurchase): void {
     token.nTokensBought = token.nTokensBought.plus(
       event.params.tokensBoughtAmounts[i]
     );
-
-    const niftyswapExchangeContract = NiftyswapExchangeContract.bind(event.address)
-    const totalBalance = niftyswapExchangeContract.getTotalSupply([token.tokenId])[0]
-    token.liquidities = totalBalance
 
     token.save();
 
