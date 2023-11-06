@@ -80,8 +80,8 @@
     "generate-mumbai": "rm -f subgraph.yaml && mustache ./networks/mumbai.json subgraph.template.yaml subgraph.yaml"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.30.2",
-    "@graphprotocol/graph-ts": "0.27.0",
+    "@graphprotocol/graph-cli": "0.60.0",
+    "@graphprotocol/graph-ts": "0.31.0",
     "mustache": "^4.2.0",
     "source-map-support": "^0.5.21"
   }
