@@ -5,14 +5,14 @@ schema:
 dataSources:
   - kind: ethereum
     name: NiftyswapFactory
-    network: goerli
+    network: base
     source:
       address: "0x9196b852437D9Ed92d95715dCbdA4533ffC479E0"
       abi: NiftyswapFactory
-      startBlock: 6968001
+      startBlock: 2367667
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/niftyswap-factory.ts
       entities:
@@ -41,12 +41,12 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: NiftyswapExchange
-    network: goerli
+    network: base
     source:
       abi: NiftyswapExchange
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/niftyswap-exchange.ts
       entities:
